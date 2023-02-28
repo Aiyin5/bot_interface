@@ -5,11 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "lint": "vue-cli-service lint"
   },
   "main": "background.js",
   "dependencies": {
@@ -33,7 +29,6 @@
     "eslint-plugin-vue": "^8.0.3",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
-    "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-loader": "^17.0.1",
     "vue-template-compiler": "^2.7.14"
   },
