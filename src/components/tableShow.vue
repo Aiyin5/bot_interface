@@ -197,6 +197,7 @@ export default {
     };
 
     const handleGet = ()=>{
+      tableData.value=[];
       axios.get('/api').
       then(response => {
         let items=JSON.parse(response.data);
