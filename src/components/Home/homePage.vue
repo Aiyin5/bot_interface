@@ -42,6 +42,7 @@
         <el-main>
           <table-show v-if="tShow"></table-show>
           <hello-world v-if="hShow"></hello-world>
+          <chat-Interaction v-if="XShow"></chat-Interaction>
           <h v-if="OShow">"暂时没有"</h>
         </el-main>
       </el-container>
@@ -53,43 +54,51 @@
 import TableShow from "@/components/tableShow.vue";
 import HelloWorld from "@/components/fileUpdate.vue";
 import {ref} from "vue";
+import ChatInteraction from "@/components/chatModel/chatInteraction.vue";
 export default {
-  components: {HelloWorld, TableShow},
+  components: {ChatInteraction, HelloWorld, TableShow,},
   computed: {
   },
   setup() {
     const tShow = ref(true)
     const hShow = ref(false)
     const OShow= ref(false)
+    const XShow= ref(false)
     function clickChangeT(){
       tShow.value=true;
       hShow.value=false;
       OShow.value=false;
+      XShow.value=false;
     }
     function clickChangeC(){
       tShow.value=false;
       hShow.value=true;
       OShow.value=false;
+      XShow.value=false;
     }
     function clickChangeX(){
       tShow.value=false;
       hShow.value=false;
-      OShow.value=true;
+      OShow.value=false;
+      XShow.value=true;
     }
     function clickChangeM(){
       tShow.value=false;
       hShow.value=false;
       OShow.value=true;
+      XShow.value=false;
     }
     function clickChangeO(){
       tShow.value=false;
       hShow.value=false;
       OShow.value=true;
+      XShow.value=false;
     }
     function clickChangeJ(){
       tShow.value=false;
       hShow.value=false;
       OShow.value=true;
+      XShow.value=false;
     }
     return {
       clickChangeT,
@@ -101,6 +110,7 @@ export default {
       tShow,
       hShow,
       OShow,
+      XShow,
     }
   }
 }

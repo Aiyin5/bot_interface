@@ -94,7 +94,9 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 export default {
   name: 'tableShow',
-
+  mounted() {
+    this.handleGet();
+  },
   setup() {
     let total = ref(0);
     const pageSize = ref(10);
@@ -121,7 +123,7 @@ export default {
     };
     const handleUpdateBot= () => {
       let item={"data":"update"};
-      axios.post('/server',item,{
+      axios.post('/server/update',item,{
         headers: {
           'Content-Type': 'application/json'
         }}).
@@ -138,7 +140,7 @@ export default {
     const handleUpdate= () => {
       let str=getFile();
       let item={data:str}
-      axios.post('/api',item,{
+      axios.post('/app/api/input',item,{
         headers: {
           'Content-Type': 'application/json'
         }}).
@@ -198,7 +200,7 @@ export default {
 
     const handleGet = ()=>{
       tableData.value=[];
-      axios.get('/api').
+      axios.get('/app/api/read').
       then(response => {
         let items=JSON.parse(response.data);
         for(let item of items){
