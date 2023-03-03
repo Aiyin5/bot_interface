@@ -3,30 +3,24 @@
     <el-button
         type="primary"
         size="small"
-        @click="handleGet">获取当前数据</el-button>
-    <el-button
-        type="primary"
-        size="small"
         @click="handleAdd">
       新增
     </el-button>
     <el-button
         type="primary"
         size="small"
+        @click="handleGet">获取当前数据</el-button>
+    <el-button
+        type="primary"
+        size="small"
         @click="handleUpdate">
-      保存到服务器
+      更新到机器人
     </el-button>
     <el-button
         type="primary"
         size="small"
         @click="handleSaveLocal">
       保存至本地
-    </el-button>
-    <el-button
-        type="primary"
-        size="small"
-        @click="handleUpdateBot">
-      更新到DiscordBot
     </el-button>
   </div>
   <div>
@@ -121,26 +115,10 @@ export default {
 
 
     };
-    const handleUpdateBot= () => {
-      let item={"data":"update"};
-      axios.post('/server/update',item,{
-        headers: {
-          'Content-Type': 'application/json'
-        }}).
-      then(response => {
-        console.log(response);
-        ElMessage('更新成功.')
-        // 处理响应
-      }).catch(error => {
-        // 处理错误
-        ElMessage('更新失败，请重试'+error)
-        console.log(error);
-      });
-    }
     const handleUpdate= () => {
       let str=getFile();
       let item={data:str}
-      axios.post('/app/api/input',item,{
+      axios.post('/app/update',item,{
         headers: {
           'Content-Type': 'application/json'
         }}).
@@ -158,7 +136,14 @@ export default {
       let out=[];
       for(let one of tableData.value){
         let cur={};
-        cur.prompt=one.name.split(',');
+        cur.prompt=[];
+        one.name=one.name.replaceAll("，",",");
+        if(!one.name.includes(",")){
+          cur.prompt.push(one.name);
+        }
+        else {
+          cur.prompt=one.name.split(',');
+        }
         cur.completion=one.address;
         let str=JSON.stringify(cur);
         out.push(str);
@@ -200,7 +185,7 @@ export default {
 
     const handleGet = ()=>{
       tableData.value=[];
-      axios.get('/app/api/read').
+      axios.get('/app/jsonfile').
       then(response => {
         let items=JSON.parse(response.data);
         for(let item of items){
@@ -236,7 +221,6 @@ export default {
       total,
       pageSize,
       handleUpdate,
-      handleUpdateBot,
       currentPage,
     };
   },
