@@ -27,8 +27,19 @@
         <div v-loading="loading" class="output1">
           <el-card shadow="hover">
             <el-table :data="tableData" border style="width: 100%;height: 350px">
-              <el-table-column style="width: 40%;" prop="input" label="输入"  />
-              <el-table-column prop="output" label="输出"  />
+              <el-table-column width="200px" prop="input" label="输入">
+              </el-table-column>
+              <el-table-column width="380px" prop="output" label="输出">
+              </el-table-column>
+              <el-table-column width="60px"
+                  label="操作">
+                  <el-button
+                      type="primary"
+                      size="small"
+                      @click="handleAdd()">
+                    新增
+                  </el-button>
+              </el-table-column>
             </el-table>
           </el-card>
         </div>
@@ -50,10 +61,13 @@ export default {
     const textarea = ref('');
     const tableData = ref([
     ]);
+
     const contentData=ref('宣传公会是外界了解 SeeDAO 的窗口。SeeDAO为Web3观点碰撞、创意与实践提供了土壤。每天都有新鲜的观点、高价值的对话、前沿而好玩的产品、先锋前卫的创作在这里诞生。而我们，就是将这些内容呈现给外界的管道。我们有对 Web3 的理解和态度，并试图影响更多对此感兴趣的人们。欢迎一切热心于文字、视觉、传播工作的朋友加入我们。')
     const showText = ()=>{
       loading.value=true;
-      let item={"message":textarea.value};
+      let finalText="将下面的内容拆分为多个提问和回答，以问答对的格式展示。";
+      finalText=finalText+textarea.value;
+      let item={"message":finalText};
       axios.post('/app/question',item,{
         headers: {
           'Content-Type': 'application/json'

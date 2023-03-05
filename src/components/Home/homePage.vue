@@ -1,17 +1,7 @@
 <template>
-  <el-container class="layout-container-demo" style="height: 100%">
-    <el-header style="text-align: center; font-size: 18px">
-      <div class="toolbar">
-        <el-dropdown>
-          <el-icon style="margin-right: 8px; margin-top: 1px"
-          ><setting
-          /></el-icon>
-        </el-dropdown>
-        <span>DisocordBot</span>
-      </div>
-    </el-header>
+  <el-container class="layout-container-demo" style="height: 120%">
     <el-container>
-      <el-aside width="200px">
+      <el-aside width="18%">
         <el-scrollbar>
           <el-menu :default-openeds="['1','2','3']">
             <el-sub-menu index="1" >
