@@ -27,7 +27,6 @@
     <el-table
         :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
         border
-        stripe
         style="width: 100%">
       <el-table-column
           prop="name"
@@ -58,7 +57,7 @@
             type="primary"
             size="small"
             @click="handleEdit(scope.row)">
-          编辑
+          更新
         </el-button>
         <el-button
             type="danger"
@@ -161,7 +160,25 @@ export default {
     }
 
     const handleEdit = (row) => {
-      editingRow.value = row;
+      let data={
+        "data":{
+          "prompt":row.name,
+          "completion":row.address
+        },
+        "where":{"id":row.id}
+      }
+      axios.post('/server/update',data,{
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(response => {
+        console.log(response);
+        ElMessage('更新成功.')
+      }).catch(error => {
+        // 处理错误
+        ElMessage('更新失败.')
+        //displayText.value=error;
+        console.log(error);
+      });
     };
 
     const handleBlur = () => {
@@ -175,9 +192,25 @@ export default {
 
     const handleDelete = (row) => {
       console.log(row);
+      let data={
+        "id":row.id
+      }
+      axios.post('/server/delete',data,{
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(response => {
+        console.log(response);
+        ElMessage('删除成功.')
+      }).catch(error => {
+        // 处理错误
+        ElMessage('删除失败.')
+        //displayText.value=error;
+        console.log(error);
+      });
       const index = tableData.value.indexOf(row);
       //console.log(index);
       if (index !== -1) {
+
         tableData.value.splice(index, 1);
       }
       total.value=tableData.value.length;
@@ -185,12 +218,12 @@ export default {
 
     const handleGet = ()=>{
       tableData.value=[];
-      axios.get('/app/jsonfile').
+      axios.get('/server/data').
       then(response => {
-        let items=JSON.parse(response.data);
+        let items=response.data;
         for(let item of items){
           tableData.value.push({
-            id: tableData.value.length + 1,
+            id: item.id,
             name: item.prompt.toString(),
             address: item.completion
           });

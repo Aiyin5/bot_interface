@@ -12,33 +12,36 @@
   <div>
     <el-row>
       <el-col :span="8"><div class="grid-content ep-bg-purple" />
-        <el-input class="input1"
-                  v-model="textarea"
-                  :rows="8"
-                  type="textarea"
-                  placeholder="Please input">
-        </el-input>
+        <el-row>
+          <el-input class="input1"
+                    v-model="textarea"
+                    :rows="8"
+                    type="textarea"
+                    placeholder="Please input">
+          </el-input>
+        </el-row>
         <el-button class="button1" type="info" @click="showText">Send</el-button>
+        <el-row>
         <el-tag class="tag3">示例</el-tag>
+        </el-row>
         <el-card class="card1" shadow="hover">{{contentData}}
         </el-card>
       </el-col>
       <el-col :span="16"><div class="grid-content ep-bg-purple-light" />
         <div v-loading="loading" class="output1">
           <el-card shadow="hover">
-            <el-table :data="tableData" border style="width: 100%;height: 350px">
+            <el-table :data="tableData" border style="width: 100%;height: 400px">
               <el-table-column width="180px" prop="input" label="输入">
               </el-table-column>
               <el-table-column width="380px" prop="output" label="输出">
               </el-table-column>
-              <el-table-column width="80px"
+              <el-table-column width="100px"
                   label="操作">
-                  <el-button
-                      type="primary"
-                      size="small"
-                      @click="handleAdd()">
+                <template #default="scope">
+                  <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
                     新增
                   </el-button>
+                </template>
               </el-table-column>
             </el-table>
           </el-card>
@@ -46,6 +49,18 @@
       </el-col>
     </el-row>
   </div>
+  <el-dialog v-model="dialogFormVisible" title="编辑非标问答">
+    <span>输入：<el-input v-model="prompt" autocomplete="off" style="width: 70%;"/></span>
+    <div>输出：<el-input v-model="completion" autocomplete="off" style="width: 70%;" /></div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="upDateToData">
+          添加到问答库
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -57,6 +72,9 @@ import {ElMessage} from "element-plus";
 export default {
   name: 'unstandChat',
   setup() {
+    const prompt=ref('');
+    const completion=ref('');
+    const dialogFormVisible = ref(false);
     const loading = ref(false)
     const textarea = ref('');
     const tableData = ref([
@@ -104,7 +122,7 @@ export default {
             let tableMem={};
             tableMem.input=pair[0];
             tableMem.output=pair[1];
-            this.tableData.value.push(tableMem);
+            tableData.value.push(tableMem);
           }
         }
         else{
@@ -122,13 +140,47 @@ export default {
         console.log(error);
       });
     }
-
+    const handleEdit = (index,  item)=>{
+      console.log(index);
+      console.log(item);
+      console.log(item.input)
+      prompt.value=item.input;
+      completion.value=item.output;
+      dialogFormVisible.value = true;
+    }
+    const upDateToData = ()=>{
+      prompt.value=prompt.value.replaceAll("，",",");
+      let content=prompt.value.toLowerCase();
+      let data={
+        "prompt":content,
+        "completion":completion.value
+      }
+      axios.post('/server/add',data,{
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(response => {
+        console.log(response);
+        ElMessage('发送成功.')
+      }).catch(error => {
+        // 处理错误
+        ElMessage('发送失败.')
+        //displayText.value=error;
+        console.log(error);
+      });
+      dialogFormVisible.value = false
+    }
     return {
       textarea,
       contentData,
       showText,
       loading,
       tableData,
+      handleEdit,
+      dialogFormVisible,
+      prompt,
+      completion,
+      upDateToData
+
     }
   },
 }
@@ -139,8 +191,8 @@ export default {
 .tag1 {
   /* 文本框输入 */
   position: relative;
-  top: 30px;
-  left: -130px;
+  float:left;
+  margin-top: 20px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
@@ -152,8 +204,8 @@ export default {
 .tag2 {
   /* 文本框输入 */
   position: relative;
-  top: 30px;
-  left: -330px;
+  float:left;
+  margin-top: 20px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
@@ -165,33 +217,37 @@ export default {
 
 .input1 {
   position: relative;
-  left: 15px;
-  top: 50px;
-  width: 80%;
+  margin-top: 20px;
+  margin-right: 40px;
 }
 .output1{
+  float:left;
+  margin-top: 20px;
   position: relative;
-  left: 30px;
-  top: 50px;
-  width: 90%;
-  high:300px;
 }
 .button1{
+  float:right;
+  margin-right: 40px;
   position: relative;
-  left: -60px;
-  top: 35px;
 }
 .tag3{
+  float:left;
+  margin-top: 20px;
   position: relative;
-  left: -150px;
-  top: 55px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  /* identical to box height */
+  color: #000000;
 }
 .card1{
   position: relative;
-  left: 20px;
-  top: 70px;
-  width: 80%;
-  font-size: 12px;
+  float:right;
+  margin-top: 20px;
+  margin-right: 40px;
+  font-size: 14px;
   text-align: left;
 }
 </style>
