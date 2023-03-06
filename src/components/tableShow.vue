@@ -115,8 +115,7 @@ export default {
 
     };
     const handleUpdate= () => {
-      let str=getFile();
-      let item={data:str}
+      let item={data:"update"}
       axios.post('/app/update',item,{
         headers: {
           'Content-Type': 'application/json'
