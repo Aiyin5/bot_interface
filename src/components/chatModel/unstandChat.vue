@@ -27,11 +27,11 @@
         <div v-loading="loading" class="output1">
           <el-card shadow="hover">
             <el-table :data="tableData" border style="width: 100%;height: 350px">
-              <el-table-column width="200px" prop="input" label="输入">
+              <el-table-column width="180px" prop="input" label="输入">
               </el-table-column>
               <el-table-column width="380px" prop="output" label="输出">
               </el-table-column>
-              <el-table-column width="60px"
+              <el-table-column width="80px"
                   label="操作">
                   <el-button
                       type="primary"
