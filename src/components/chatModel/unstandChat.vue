@@ -93,14 +93,14 @@ export default {
             tableData.value.push(tableMem);
           }
         }
-        else if(res.includes("问:"))
+        else if(res.includes("提问:"))
         {
-          let item=res.split("问:");
+          let item=res.split("提问:");
           for(let one of item){
-            if(!one.includes("答:")){
+            if(!one.includes("回答:")){
               continue;
             }
-            let pair=one.split("答:");
+            let pair=one.split("回答:");
             let tableMem={};
             tableMem.input=pair[0];
             tableMem.output=pair[1];
