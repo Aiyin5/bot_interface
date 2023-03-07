@@ -1,6 +1,8 @@
 <template>
   <el-container class="layout-container-demo" style="height: 120%">
-    <el-header></el-header>
+    <el-header style="position:relative;text-align:center;align:center;vertical-align:middle;">
+      <div style="position:relative;text-align:center;align:center;vertical-align:middle;margin-top: 20px">AMA_Bot Backend</div>
+    </el-header>
     <el-container>
       <el-aside width="18%">
         <el-scrollbar>

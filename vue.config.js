@@ -3,7 +3,16 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave:false,
 })
-module.exports = { configureWebpack: {
+module.exports = {
+    chainWebpack: config => {
+        config
+            .plugin('html')
+            .tap(args => {
+                args[0].title = 'AMA_Bot'
+                return args
+            })
+    },
+    configureWebpack: {
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"],
         alias: {},
