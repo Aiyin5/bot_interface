@@ -18,10 +18,6 @@ export const constantRoutes = [
         component: () => import('../components/Home/testPage.vue'),
     },
     {
-        path: '/test2',
-        component: () => import('../components/Home/testPage2.vue'),
-    },
-    {
         path: '/table',
         component: () => import('../components/tableShow.vue'),
     }

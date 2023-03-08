@@ -42,22 +42,22 @@
     <el-col :span="16" class="output1">
         <el-card shadow="hover" v-loading="loading">
           <el-table :data="tableData" border style="width: 100%;height: 400px">
-            <el-table-column  prop="prompt" width="250px" label="输入">
+            <el-table-column  prop="prompt" width="250px" label="问题">
             </el-table-column>
-            <el-table-column prop="completion" label="输出">
+            <el-table-column prop="completion" label="答案">
             </el-table-column>
           </el-table>
           <el-button class="buttonright"
                      type="primary"
                      size="small"
-                     @click="handleSend()">
-            发送
+                     @click="handleClean()">
+            清空
           </el-button>
           <el-button class="buttonright"
                      type="primary"
                      size="small"
-                     @click="handleClean()">
-            清空
+                     @click="handleSend()">
+            发送
           </el-button>
         </el-card>
     </el-col>

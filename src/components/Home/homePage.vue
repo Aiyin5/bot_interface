@@ -27,7 +27,7 @@
               <template #title>
                 <el-icon><setting /></el-icon>机器人控制
               </template>
-              <el-menu-item index="3-1" @click="clickBotSet">机器人重启</el-menu-item>
+              <el-menu-item index="3-1" @click="clickBotSet">机器人配置</el-menu-item>
               <el-menu-item index="3-2" @click="clickBotOther">其他</el-menu-item>
             </el-sub-menu>
           </el-menu>
@@ -38,7 +38,8 @@
           <question-normal v-if="QueNShow"></question-normal>
           <table-show v-if="QueAllShow"></table-show>
           <unstand-chat v-if="QueUShow"></unstand-chat>
-          <h v-if="!QueNShow && !QueAllShow && !QueUShow">"暂时没有"</h>
+          <bot-action v-if="BotSetShow"></bot-action>
+          <h v-if="!QueNShow && !QueAllShow && !QueUShow &&!BotSetShow">"暂时没有"</h>
         </el-main>
       </el-container>
     </el-container>
@@ -50,11 +51,12 @@ import TableShow from "@/components/tableShow.vue";
 import {ref} from "vue";
 import UnstandChat from "@/components/questionColletion/unstandChat.vue";
 import QuestionNormal from "@/components/questionColletion/questionNormal.vue";
+import BotAction from "@/components/botActions/botAction.vue";
 export default {
   mounted() {
     this.clickQueN();
   },
-  components: {QuestionNormal, UnstandChat, TableShow,},
+  components: {BotAction, QuestionNormal, UnstandChat, TableShow,},
   computed: {
   },
   setup() {

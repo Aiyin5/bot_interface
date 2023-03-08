@@ -20,7 +20,7 @@
                     placeholder="Please input">
           </el-input>
         </el-row>
-        <el-button class="button1" type="info" @click="showText">Send</el-button>
+        <el-button class="button1" type="info" @click="showText">添加</el-button>
         <el-row>
         <el-tag class="tag3">示例</el-tag>
         </el-row>
@@ -31,15 +31,15 @@
         <div v-loading="loading" class="output1">
           <el-card shadow="hover">
             <el-table :data="tableData" border style="width: 100%;height: 400px">
-              <el-table-column width="180px" prop="input" label="输入">
+              <el-table-column width="180px" prop="input" label="问题">
               </el-table-column>
-              <el-table-column width="380px" prop="output" label="输出">
+              <el-table-column width="380px" prop="output" label="答案">
               </el-table-column>
               <el-table-column width="100px"
                   label="操作">
                 <template #default="scope">
                   <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
-                    新增
+                    编辑
                   </el-button>
                 </template>
               </el-table-column>
@@ -50,8 +50,8 @@
     </el-row>
   </div>
   <el-dialog v-model="dialogFormVisible" title="编辑非标问答">
-    <span>输入：<el-input v-model="prompt" autocomplete="off" style="width: 70%;"/></span>
-    <div>输出：<el-input v-model="completion" autocomplete="off" style="width: 70%;" /></div>
+    <span>提问：<el-input v-model="prompt" autocomplete="off" style="width: 70%;"/></span>
+    <div>回答：<el-input v-model="completion" autocomplete="off" style="width: 70%;" /></div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
