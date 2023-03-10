@@ -20,7 +20,7 @@
                     placeholder="Please input">
           </el-input>
         </el-row>
-        <el-button class="button1" type="info" @click="showText">添加</el-button>
+        <el-button class="button1" type="primary" size="small" @click="showText">添加</el-button>
         <el-row>
         <el-tag class="tag3">示例</el-tag>
         </el-row>
@@ -82,6 +82,7 @@ export default {
 
     const contentData=ref('宣传公会是外界了解 SeeDAO 的窗口。SeeDAO为Web3观点碰撞、创意与实践提供了土壤。每天都有新鲜的观点、高价值的对话、前沿而好玩的产品、先锋前卫的创作在这里诞生。而我们，就是将这些内容呈现给外界的管道。我们有对 Web3 的理解和态度，并试图影响更多对此感兴趣的人们。欢迎一切热心于文字、视觉、传播工作的朋友加入我们。')
     const showText = ()=>{
+      tableData.value=[];
       loading.value=true;
       let finalText="将下面的内容拆分为多个提问和回答，以问答对的格式展示。";
       finalText=finalText+textarea.value;

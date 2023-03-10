@@ -12,7 +12,7 @@
                 <el-icon><message /></el-icon>问答更新
               </template>
               <el-menu-item index="1-1" @click="clickQueN">标准问答</el-menu-item>
-              <el-menu-item index="1-2" @click="clickQueU">非标问答</el-menu-item>
+              <el-menu-item index="1-2" @click="clickQueU">非标问答转换</el-menu-item>
               <el-menu-item index="1-3" @click="clickQueC">命令问答</el-menu-item>
               <el-menu-item index="1-4" @click="clickQueAll">问答库</el-menu-item>
             </el-sub-menu>
@@ -21,7 +21,7 @@
                 <el-icon><Edit  /></el-icon>模型相关
               </template>
                 <el-menu-item index="2-1" @click="clickModelSet">模型配置</el-menu-item>
-                <el-menu-item index="2-2" @click="clickModelTrain">模型训练</el-menu-item>
+                <el-menu-item index="2-2" @click="clickModelTrain">数据配置</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="3">
               <template #title>
@@ -39,7 +39,8 @@
           <table-show v-if="QueAllShow"></table-show>
           <unstand-chat v-if="QueUShow"></unstand-chat>
           <bot-action v-if="BotSetShow"></bot-action>
-          <h v-if="!QueNShow && !QueAllShow && !QueUShow &&!BotSetShow">"暂时没有"</h>
+          <bot-data v-if="ModelTrainShow"></bot-data>
+          <h v-if="!QueNShow && !QueAllShow && !QueUShow &&!BotSetShow &&!ModelTrainShow">"暂时没有"</h>
         </el-main>
       </el-container>
     </el-container>
@@ -52,11 +53,12 @@ import {ref} from "vue";
 import UnstandChat from "@/components/questionColletion/unstandChat.vue";
 import QuestionNormal from "@/components/questionColletion/questionNormal.vue";
 import BotAction from "@/components/botActions/botAction.vue";
+import BotData from "@/components/chatModel/botData.vue";
 export default {
   mounted() {
     this.clickQueN();
   },
-  components: {BotAction, QuestionNormal, UnstandChat, TableShow,},
+  components: {BotData, BotAction, QuestionNormal, UnstandChat, TableShow,},
   computed: {
   },
   setup() {

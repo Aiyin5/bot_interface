@@ -14,8 +14,8 @@ export const constantRoutes = [
         component: () => import('../components/fileUpdate.vue'),
     },
     {
-        path: '/test',
-        component: () => import('../components/Home/testPage.vue'),
+        path: '/index',
+        component: () => import('../components/Home/indexPage.vue'),
     },
     {
         path: '/table',
