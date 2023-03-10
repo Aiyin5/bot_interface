@@ -1,74 +1,153 @@
 <template>
   <div>
-    <h1>配置机器人的信息</h1>
-    <el-form :model="form" ref="form" label-width="120px">
-      <el-form-item label="机器人的用户名" prop="name">
-        <el-input v-model="form.name"></el-input>
+    <el-row>
+      <div class="baseInfo">
+        基础信息   <el-button type="primary" :icon="Edit" size="small" circle
+      @click="editBaseInfo"/>
+      </div>
+    </el-row>
+    <el-form class="baseForm"
+        :label-position="'top'"
+        label-width="100px"
+        :model="formData"
+    >
+      <el-form-item label="机器人名称">
+        <el-input v-model="formData.name" :disabled="!editShow" style="max-width: 100px" />
       </el-form-item>
-      <el-form-item label="状态" prop="gender">
-        <el-radio-group v-model="form.gender">
-          <el-radio label="休息">休息</el-radio>
-          <el-radio label="工作">工作</el-radio>
-        </el-radio-group>
+      <el-form-item label="头像">
+        <el-avatar :size="80" :src="formData.avatar" />
       </el-form-item>
-      <el-form-item label="签名" prop="name">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item>
+        <el-upload
+            class="avatar-upload"
+            :show-file-list="false"
+            :before-upload="beforeUpload"
+            :on-error="handleUploadError"
+            action="#"
+            :http-request="httpRequest"
+        >
+          <el-button type="primary" size="small" v-if="editShow" style="float:left;">
+            上传新头像
+          </el-button>
+        </el-upload>
       </el-form-item>
-      <el-form-item label="配置新人进入后的自动回复" prop="name">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item label="新成员加入后的自动引导内容"  style="position: relative; margin-top: -10px;">
+        <el-input v-model="formData.initInfo" type="textarea" rows="6" :disabled="!editShow" />
       </el-form-item>
+      <el-button  v-if="editShow" type="primary" size="small" style="float:left;"
+                 @click="handleCancel">
+        取消
+      </el-button>
+      <el-button  v-if="editShow" type="primary" size="small" style="float:left; "
+                 @click="handleConform">
+        保存
+      </el-button>
     </el-form>
   </div>
-  <div class="avatar-update">
-    <el-image :src="avatarUrl" fit="cover" alt="avatar" class="avatar-preview">
-      <template #error>
-        <i class="el-icon-user"></i>
-      </template>
-    </el-image>
-    <el-upload
-        class="avatar-upload"
-        action="/api/avatar/upload"
-        :show-file-list="false"
-        :before-upload="beforeUpload"
-        :on-success="handleUploadSuccess"
-        :on-error="handleUploadError"
-    >
-      <el-button type="primary" icon="el-icon-upload">
-        上传新头像
-      </el-button>
-    </el-upload>
-  </div>
+
 </template>
 
 <script>
 import { ref } from 'vue';
-import { ElForm, ElFormItem, ElInput, ElRadio, ElRadioGroup ,ElImage, ElButton, ElUpload} from 'element-plus';
+import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
 import { reactive } from 'vue';
+import {Edit} from "@element-plus/icons-vue";
+import axios from "axios";
 export default {
   name: 'botAction',
+  mounted() {
+    this.getInfo();
+  },
+  computed: {
+    Edit() {
+      return Edit
+    },
+    readType(){
+      return this.editShow.value;
+    }
+  },
   components: {
     ElForm,
     ElFormItem,
     ElInput,
-    ElRadio,
-    ElRadioGroup,
-    ElImage,
     ElButton,
-    ElUpload,
   },
   setup() {
-    const form = ref({
-      name: '',
-      gender: '',
-      birthdate: '',
-      occupation: '',
-      address: ''
-    });
-
+    const editShow=ref(false);
+    const formData = reactive({
+      name: 'AMA_BOT',
+      avatar: '123',
+      initInfo: '--------------------------------',
+      base64String:'',
+    })
     const state = reactive({
       avatarUrl: '/default-avatar.jpg',
     })
+    const editBaseInfo=()=>{
+      editShow.value=true;
+    }
+    const handleCancel= ()=>{
+      editShow.value=false;
+    }
+    const handleConform= ()=>{
+      let data= {"data":{
+          "name":formData.name,
+          "avatar":formData.base64String,
+          "status":"0",
+          "contents":formData.initInfo,
+          "info":"nothing"
+        }}
+      axios.post('/server/botInfo',data,{
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(response => {
+        console.log(response);
+/*        axios.post('/api/botInfo', {"data":"update"},{
+          headers: {
+            'Content-Type': 'application/json'
+          }}).then(response => {
+          console.log(response);
+          ElMessage('更新成功.')
+        }).catch(error => {
+          // 处理错误
+          ElMessage('更新失败.')
+          //displayText.value=error;
+          console.log(error);
+        });*/
+      }).catch(error => {
+        // 处理错误
+        ElMessage('更新失败.')
+        //displayText.value=error;
+        console.log(error);
+      });
+      editShow.value=false;
+    }
 
+    const getInfo=()=>{
+      axios.get('/server/botInfo').
+      then(response => {
+        let items = response.data[0];
+        console.log(items);
+        formData.name=items.name;
+        formData.initInfo=items.contents;
+        formData.base64String=items.avatar;
+        const blob = base64ToBlob(formData.base64String, 'image/jpeg');
+        const url = URL.createObjectURL(blob);
+        formData.avatar=url;
+      }).catch(error => {
+        // 处理错误
+        ElMessage('获取机器人数据失败'+error)
+        console.log(error);
+      });
+    }
+    function transFormImage(file){
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result;
+        formData.base64String = base64String;
+      },
+      reader.readAsDataURL(file);
+    }
     function beforeUpload(file) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJpgOrPng) {
@@ -80,14 +159,20 @@ export default {
       }
       return isJpgOrPng && isLt2M
     }
-
-    function handleUploadSuccess(response) {
-      if (response.code === 200) {
-        state.avatarUrl = response.data.url
-        this.$message.success('头像上传成功')
-      } else {
-        this.$message.error(response.message)
+    function httpRequest (data) {
+      let file = data.file
+      transFormImage(file)
+      const url = URL.createObjectURL(file);
+      formData.avatar=url;
+    }
+    function base64ToBlob(base64String, type = 'image/jpeg') {
+      const bytes = window.atob(base64String.split(',')[1]);
+      const arrayBuffer = new ArrayBuffer(bytes.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < bytes.length; i++) {
+        uint8Array[i] = bytes.charCodeAt(i);
       }
+      return new Blob([arrayBuffer], { type });
     }
 
     function handleUploadError(error) {
@@ -106,17 +191,42 @@ export default {
     };
 
     return {
-      form,
       submitForm,
       state,
+      editShow,
+      formData,
       beforeUpload,
-      handleUploadSuccess,
       handleUploadError,
+      editBaseInfo,
+      handleCancel,
+      handleConform,
+      getInfo,
+      httpRequest,
+      transFormImage,
+      base64ToBlob,
     };
   }
 };
 </script>
 <style>
+.baseForm{
+  position: relative;
+  margin-top: 20px;
+  margin-left: 20px;
+  max-width: 800px;
+}
+.baseInfo{
+  position: relative;
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 25px;
+  font-weight: bold;
+}
+.nickName{
+  position: relative;
+  margin-top: 5px;
+  margin-left: 20px;
+}
 .avatar-update {
   display: flex;
   flex-direction: column;

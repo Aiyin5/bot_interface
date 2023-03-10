@@ -28,25 +28,41 @@
         </el-card>
       </el-col>
       <el-col :span="16"><div class="grid-content ep-bg-purple-light" />
-        <div v-loading="loading" class="output1">
+        <div v-loading="loading" class="completion1">
           <el-card shadow="hover">
             <el-table :data="tableData" border style="width: 100%;height: 400px">
-              <el-table-column width="180px" prop="input" label="问题">
+<!--              <el-table-column width="180px" prop="input" label="问题">
+              </el-table-column>-->
+              <el-table-column width="200px"
+                  prop="prompt"
+                  label="问题">
+                <template #default="scope">
+                  <el-input
+                      type="textarea"
+                      rows="2"
+                      v-model="scope.row.prompt"
+                      size="small"
+                      @blur="handleBlur(scope.row)">
+                  </el-input>
+                </template>
               </el-table-column>
-              <el-table-column width="380px" prop="output" label="答案">
+              <el-table-column width="380px" prop="completion" label="答案">
               </el-table-column>
-              <el-table-column width="150px"
+              <el-table-column width="80px"
                   label="操作">
                 <template #default="scope">
-                  <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+<!--                  <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
                     编辑
-                  </el-button>
+                  </el-button>-->
                   <el-button size="small" @click="handleDelete(scope.$index, scope.row)">
                     删除
                   </el-button>
                 </template>
               </el-table-column>
             </el-table>
+            <el-button type="primary" @click="upDateToData" >
+              添加到问答库
+            </el-button>
           </el-card>
         </div>
       </el-col>
@@ -58,7 +74,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="upDateToData">
+        <el-button type="primary" @click="upDateToData" style="margin-right: 10px">
           添加到问答库
         </el-button>
       </span>
@@ -81,6 +97,7 @@ export default {
     const loading = ref(false)
     const textarea = ref('');
     const tableData = ref([
+
     ]);
 
     const contentData=ref('宣传公会是外界了解 SeeDAO 的窗口。SeeDAO为Web3观点碰撞、创意与实践提供了土壤。每天都有新鲜的观点、高价值的对话、前沿而好玩的产品、先锋前卫的创作在这里诞生。而我们，就是将这些内容呈现给外界的管道。我们有对 Web3 的理解和态度，并试图影响更多对此感兴趣的人们。欢迎一切热心于文字、视觉、传播工作的朋友加入我们。')
@@ -110,8 +127,8 @@ export default {
             }
             let pair=one.split("A:");
             let tableMem={};
-            tableMem.input=pair[0];
-            tableMem.output=pair[1];
+            tableMem.prompt=pair[0];
+            tableMem.completion=pair[1];
             tableData.value.push(tableMem);
           }
         }
@@ -124,8 +141,8 @@ export default {
             }
             let pair=one.split("回答:");
             let tableMem={};
-            tableMem.input=pair[0];
-            tableMem.output=pair[1];
+            tableMem.prompt=pair[0];
+            tableMem.completion=pair[1];
             tableData.value.push(tableMem);
           }
         }
@@ -145,11 +162,8 @@ export default {
       });
     }
     const handleEdit = (index,  item)=>{
-      console.log(index);
-      console.log(item);
-      console.log(item.input)
-      prompt.value=item.input;
-      completion.value=item.output;
+      prompt.value=item.prompt;
+      completion.value=item.completion;
       dialogFormVisible.value = true;
     }
     const handleDelete = (index,  item)=>{
@@ -160,7 +174,29 @@ export default {
     }
 
     const upDateToData = ()=>{
-      prompt.value=prompt.value.replaceAll("，",",");
+      let data=[];
+      for(let item of tableData.value){
+        let tableMem={};
+        tableMem.prompt=item.prompt;
+        tableMem.completion=item.completion;
+        tableMem.prompt=tableMem.prompt.replaceAll("，",",");
+        tableMem.prompt=tableMem.prompt.toLowerCase();
+        data.push(tableMem);
+      }
+      axios.post('/server/addMulti',data,{
+        headers: {
+          'Content-Type': 'application/json'
+        }}).then(response => {
+        console.log(response);
+        ElMessage('发送成功.')
+        tableData.value=[];
+      }).catch(error => {
+        // 处理错误
+        ElMessage('发送失败.')
+        //displayText.value=error;
+        console.log(error);
+      });
+/*      prompt.value=prompt.value.replaceAll("，",",");
       let content=prompt.value.toLowerCase();
       let data={
         "prompt":content,
@@ -178,7 +214,7 @@ export default {
         //displayText.value=error;
         console.log(error);
       });
-      dialogFormVisible.value = false
+      dialogFormVisible.value = false*/
     }
     return {
       textarea,
@@ -231,7 +267,7 @@ export default {
   margin-top: 20px;
   margin-right: 40px;
 }
-.output1{
+.completion1{
   float:left;
   margin-top: 20px;
   position: relative;
