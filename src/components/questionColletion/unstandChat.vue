@@ -20,7 +20,7 @@
                     placeholder="Please input">
           </el-input>
         </el-row>
-        <el-button class="button1" type="primary" size="small" @click="showText">添加</el-button>
+        <el-button class="button1" type="primary" size="small" @click="showText">开始识别</el-button>
         <el-row>
         <el-tag class="tag3">示例</el-tag>
         </el-row>
@@ -35,11 +35,14 @@
               </el-table-column>
               <el-table-column width="380px" prop="output" label="答案">
               </el-table-column>
-              <el-table-column width="100px"
+              <el-table-column width="150px"
                   label="操作">
                 <template #default="scope">
                   <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
                     编辑
+                  </el-button>
+                  <el-button size="small" @click="handleDelete(scope.$index, scope.row)">
+                    删除
                   </el-button>
                 </template>
               </el-table-column>
@@ -149,6 +152,13 @@ export default {
       completion.value=item.output;
       dialogFormVisible.value = true;
     }
+    const handleDelete = (index,  item)=>{
+      console.log(item);
+      if (index !== -1) {
+        tableData.value.splice(index, 1);
+      }
+    }
+
     const upDateToData = ()=>{
       prompt.value=prompt.value.replaceAll("，",",");
       let content=prompt.value.toLowerCase();
@@ -180,8 +190,8 @@ export default {
       dialogFormVisible,
       prompt,
       completion,
-      upDateToData
-
+      upDateToData,
+      handleDelete
     }
   },
 }
