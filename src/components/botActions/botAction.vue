@@ -102,25 +102,26 @@ export default {
           'Content-Type': 'application/json'
         }}).then(response => {
         console.log(response);
-/*        axios.post('/api/botInfo', {"data":"update"},{
+        axios.post('/api/botInfo', {"data":"update"},{
           headers: {
             'Content-Type': 'application/json'
           }}).then(response => {
           console.log(response);
           ElMessage('更新成功.')
+          editShow.value=false;
         }).catch(error => {
           // 处理错误
           ElMessage('更新失败.')
           //displayText.value=error;
           console.log(error);
-        });*/
+        });
       }).catch(error => {
         // 处理错误
         ElMessage('更新失败.')
         //displayText.value=error;
         console.log(error);
       });
-      editShow.value=false;
+
     }
 
     const getInfo=()=>{
@@ -153,9 +154,10 @@ export default {
       if (!isJpgOrPng) {
         this.$message.error('只能上传 JPG/PNG 格式的图片')
       }
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 < 1
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB')
+        this.$message.error('上传头像图片大小不能超过 1MB')
+        ElMessage('上传头像图片大小不能超过 1MB')
       }
       return isJpgOrPng && isLt2M
     }

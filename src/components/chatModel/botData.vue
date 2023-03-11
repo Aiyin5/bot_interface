@@ -1,14 +1,14 @@
 <template>
   <div>
     <el-row>
-    <el-select v-model="selectedOption" placeholder="当前模型使用的数据" @change="handleChange" style="
+    <el-select v-model="selectedId" placeholder="当前模型使用的数据" @change="handleChange" style="
     margin-left: 20px;margin-top: 10px;">
-      <el-option v-for="option in options" :key="option.option" :label="option.option" :value="option.value"></el-option>
+      <el-option v-for="option in options" :key="option.option" :label="option.option" :value="option.id"></el-option>
     </el-select>
     </el-row>
     <el-row>
     <el-input style="margin-top: 20px;width: 85%; margin-left: 20px;"
-              v-model="selectedOption"
+              v-model="selectedValue"
               :rows="18"
               type="textarea"
               placeholder="请选择数据关键词">
@@ -31,6 +31,18 @@
       </el-col>
     </el-row>
   </div>
+  <el-dialog v-model="dialogFormVisible" title="增加语料">
+    <span>主题：<el-input v-model="prompt" autocomplete="off" style="width: 70%;"/></span>
+    <div>内容：<el-input type="textarea" rows="15" v-model="completion" autocomplete="off" style="width: 70%;" /></div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addDataToSer" style="margin-right: 10px">
+          添加到语料库
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -46,12 +58,17 @@ export default {
   },
   setup() {
     const options = ref([]);
+    let selectedId = ref("");
     let selectedOption = ref("");
+    const dialogFormVisible = ref(false);
+    const prompt = ref("");
+    const completion = ref("");
+    const selectedValue = ref("");
     const handleGet = () => {
       options.value = [];
       axios.get('/server/unpre').then(response => {
         let items = response.data;
-        console.log(items)
+        //console.log(items)
         for (let item of items) {
           options.value.push({
             id: item.id,
@@ -66,15 +83,67 @@ export default {
         console.log(error);
       });
     }
+
+    const handleEdit=()=>{
+      let data={
+        "data":{"keywords":selectedOption.value,
+        "content":selectedValue.value},
+        "where":{"id":selectedId.value}
+      }
+      axios.put('/server/unpre',data).then(response => {
+        console.log(response)
+        ElMessage('更新成功')
+      }).catch(error => {
+        // 处理错误
+        ElMessage('更新失败.' + error)
+        console.log(error);
+      });
+    }
+    const handleAdd=()=>{
+      dialogFormVisible.value=true;
+    }
+    const addDataToSer=()=>{
+      let data={
+        "keywords":prompt.value,
+        "content":completion.value
+      }
+      axios.post('/server/unpre',data).then(response => {
+        console.log(response);
+        dialogFormVisible.value=false;
+        ElMessage('新增成功.')
+        handleGet();
+        // 处理响应
+      }).catch(error => {
+        // 处理错误
+        ElMessage('获取数据失败.' + error)
+        console.log(error);
+      });
+    }
       const handleChange=()=>{
         // 可以在这里执行选择框选项变化时需要的操作
-        console.log(selectedOption.value);
+        for(let item of options.value){
+          if(item.id===selectedId.value){
+            selectedValue.value=item.value;
+            selectedOption.value=item.option;
+            break;
+          }
+        }
+        //console.log(selectedOption.value);
       }
       return {
         options,
         selectedOption,
         handleGet,
-        handleChange
+        handleChange,
+        handleAdd,
+        dialogFormVisible,
+        addDataToSer,
+        prompt,
+        handleEdit,
+        completion,
+        selectedId,
+        selectedValue,
+
       };
     }
   }

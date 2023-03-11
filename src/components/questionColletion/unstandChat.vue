@@ -104,7 +104,7 @@ export default {
     const showText = ()=>{
       tableData.value=[];
       loading.value=true;
-      let finalText="将下面的内容拆分为多个提问和回答，以问答对的格式展示。";
+      let finalText="将下面的内容拆分为多个提问和回答，以问答对(Q:和A:)的格式展示。";
       finalText=finalText+textarea.value;
       let item={"message":finalText};
       axios.post('/app/question',item,{

@@ -11,17 +11,17 @@
               <template #title >
                 <el-icon><message /></el-icon>问答更新
               </template>
-              <el-menu-item index="1-1" @click="clickQueN">标准问答</el-menu-item>
+              <el-menu-item index="1-1" @click="clickModelTrain">语料库</el-menu-item>
               <el-menu-item index="1-2" @click="clickQueU">非标问答转换</el-menu-item>
-              <el-menu-item index="1-3" @click="clickQueC">命令问答</el-menu-item>
-              <el-menu-item index="1-4" @click="clickQueAll">问答库</el-menu-item>
+              <el-menu-item index="1-3" @click="clickQueN">标准问答</el-menu-item>
+              <el-menu-item index="1-4" @click="clickQueC">命令问答</el-menu-item>
+              <el-menu-item index="1-5" @click="clickQueAll">问答库</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="2">
               <template #title>
                 <el-icon><Edit  /></el-icon>模型相关
               </template>
                 <el-menu-item index="2-1" @click="clickModelSet">模型配置</el-menu-item>
-                <el-menu-item index="2-2" @click="clickModelTrain">数据配置</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="3">
               <template #title>
@@ -56,18 +56,18 @@ import BotAction from "@/components/botActions/botAction.vue";
 import BotData from "@/components/chatModel/botData.vue";
 export default {
   mounted() {
-    this.clickQueN();
+    //this.clickQueN();
   },
   components: {BotData, BotAction, QuestionNormal, UnstandChat, TableShow,},
   computed: {
   },
   setup() {
-    const QueNShow = ref(true)
+    const QueNShow = ref(false)
     const QueUShow = ref(false)
     const QueCShow= ref(false)
     const QueAllShow= ref(false)
     const ModelSetShow= ref(false)
-    const ModelTrainShow = ref(false)
+    const ModelTrainShow = ref(true)
     const BotSetShow = ref(false)
     const BotOtherShow= ref(false)
     function setAllfalse(){
