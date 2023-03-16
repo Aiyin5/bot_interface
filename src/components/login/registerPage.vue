@@ -2,23 +2,29 @@
   <el-row>
     <el-col :span="10" class="view_container">
       <el-row>
-      <h class="content">你好<br/>欢迎来到AMA_Bot管理后台</h>
+        <h class="content">你好<br/>欢迎来到AMA_Bot管理后台</h>
       </el-row>
       <div class="imageview">
-      <el-image style="width: 300px; height: 300px" :src="url"/>
+        <el-image style="width: 300px; height: 300px" :src="url"/>
       </div>
     </el-col>
     <el-col :span="14">
       <div class="login-container">
         <el-form class="login-form" size="large" :model="form" :rules="rules" ref="loginForm">
+          <label style="margin-bottom: 20px">注册</label>
+          <el-form-item class="form-group" prop="name">
+            <el-input placeholder="昵称" id="name" v-model="form.name" />
+          </el-form-item>
           <el-form-item class="form-group" prop="email">
             <el-input placeholder="邮箱" id="email" v-model="form.email" />
           </el-form-item>
           <el-form-item class="form-group" prop="password">
             <el-input  placeholder="密码" type="password" v-model="form.password" />
           </el-form-item>
-          <el-button class="subbutton" :loading="isload" type="primary"  @click="handleSubmit(loginForm)">登录</el-button>
-          <el-link href="http://localhost:8080/#/register" :underline="false">还没有账号？注册一个</el-link>
+          <el-form-item class="form-group" prop="confirmword">
+            <el-input  placeholder="确认密码" type="password" v-model="form.confirmword" />
+          </el-form-item>
+          <el-button class="subbutton" :loading="isload" type="primary"  @click="handleSubmit(ruleFormRef)">注册</el-button>
         </el-form>
       </div>
     </el-col>
@@ -28,62 +34,63 @@
 <script>
 import {reactive, ref} from 'vue';
 import router from '../../router/index.js'
-//import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
-import {login} from "@/api";
+import {register} from "@/api";
 import {useCounterStore} from "@/store/token.js"
 
 export default {
+  name:"registerPage",
   setup() {
     const mystore=useCounterStore();
-    const loginForm=ref();
     const form =reactive ({
       password: '',
-      email:''
+      email:'',
+      confirmword:'',
+      name:''
     })
-    //const router=useRoute();
     const isload=ref(false);
     const item = ref('')
     const url =require('@/assets/ama_bot.jpg')
     const handleSubmit = async () => {
       isload.value=true;
-      await loginForm.value.validate(async (valid)=>{
-        if(valid){
-          console.log(valid)
-          const loginInfo={
-            "email":form.email,
-            "password":form.password
-          }
-          try {
-            let res=await login(loginInfo);
-            console.log(res);
-            if(!res.status){
-              isload.value=false;
-              ElMessage("登录失败，账号或者密码错误")
-              return
-            }
-            else {
-              mystore.saveToken(res.data.token)
-              isload.value=false;
-              router.push('/');
-            }
-          }
-          catch (err){
-            isload.value=false;
-          }
+      if(!form.email || !form.password){
+        ElMessage("请输入账号和密码")
+        isload.value=false;
+        return
+      }
+      const loginInfo={
+        "email":form.email,
+        "password":form.password
+      }
+      try {
+        let res=await register(loginInfo);
+        console.log(res);
+        if(!res.status){
+          isload.value=false;
+          ElMessage("登录失败，账号或者密码错误")
+          return
         }
-      })
-      isload.value=false;
+        else {
+          mystore.saveToken(res.data.token)
+          isload.value=false;
+          router.push('/homePage');
+        }
+      }
+      catch (err){
+        isload.value=false;
+      }
+
+
     }
     const rules = reactive({
-        email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur', 'change'] },
-        ],
-            password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: ['blur', 'change'] },
-        ],
+      email: [
+        { required: true, message: '请输入邮箱', trigger: 'blur' },
+        { type: 'email', message: '请输入正确的邮箱格式', trigger: ['blur', 'change'] },
+      ],
+      password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: ['blur', 'change'] },
+      ],
     })
     return {
       handleSubmit,
@@ -93,7 +100,6 @@ export default {
       item,
       isload,
       mystore,
-      loginForm
     }
   }
 }
@@ -118,7 +124,7 @@ export default {
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.2rem;
   padding: 2rem;
   box-shadow: 0px 4px 15px #D9D9D9;
   border-radius: 5px;

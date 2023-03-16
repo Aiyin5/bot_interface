@@ -18,6 +18,7 @@
     "edgegpt": "^0.0.9",
     "element-plus": "^2.2.32",
     "fs": "^0.0.1-security",
+    "pinia": "^2.0.33",
     "simple-git": "^3.16.1",
     "vue": "^3.2.13",
     "vue-router": "^4.1.6",

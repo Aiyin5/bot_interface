@@ -2,7 +2,7 @@ name: GitHub Actions Build and Deploy Demo
 on:
   push:
     branches:
-      - main
+      - dev01
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -25,7 +25,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: aiyin/personalindex
+          images: aiyin/bot_interface
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -37,7 +37,7 @@ jobs:
       - name: ssh docker login
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.TENCENT_CLOUD_IP }}
+          host: ${{ secrets.TENCENT_CLOUD_IP_2 }}
           username: ${{ secrets.TENCENT_CLOUD_NAME }}
-          password: ${{ secrets.TENCENT_CLOUD_PASSWORD }}
-          script: cd ~ && sh deploy.sh
+          password: ${{ secrets.TENCENT_CLOUD_PASSWORD_2 }}
+          script: cd ../usr/Discord && sh deploy.sh
