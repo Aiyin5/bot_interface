@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from "vue-router"
 /*import {useCounterStore} from "@/store/token.js"*/
 import RoutesConfig from './config'
 import store from '../store/index'
+import botData from "@/components/chatModel/botData.vue";
+import MainBox from "@/view/MainBox.vue";
 export const constantRoutes = [
     {
         path: '/register',
@@ -16,20 +18,12 @@ export const constantRoutes = [
     {
         path: '/mainbox',
         meta:{requiresAuth:true},
-        component: () => import('../components/Home/homePage.vue'),
+        component: MainBox,
         children:[
             {
-                path: '/file',
-                component: () => import('../components/fileUpdate.vue'),
-            },
-            {
                 path: '/index',
-                component: () => import('../components/Home/indexPage.vue'),
+                component: botData,
             },
-            {
-                path: '/table',
-                component: () => import('../components/tableShow.vue'),
-            }
         ]
     },
 ]
@@ -84,7 +78,7 @@ const ConfigRouter = () => {
         router.addRoute(  {
             path: "/mainbox",
             name: "mainbox",
-            component: () => import('../components/Home/homePage.vue')
+            component: MainBox
         })
     }
 

@@ -29,10 +29,10 @@
 import {reactive, ref} from 'vue';
 import router from '../../router/index.js'
 //import {useRoute} from "vue-router";
-import {ElMessage} from "element-plus";
 import {login} from "@/api";
 import {useCounterStore} from "@/store/token.js"
 import {useStore } from 'vuex'
+import {ElNotification} from "element-plus";
 export default {
   setup() {
     const store = useStore()
@@ -50,27 +50,26 @@ export default {
       isload.value=true;
       await loginForm.value.validate(async (valid)=>{
         if(valid){
-          console.log(valid)
           const loginInfo={
             "email":form.email,
             "password":form.password
           }
           try {
             let res=await login(loginInfo);
-            console.log(res);
-            if(!res.data.ActionType==="OK"){
-              isload.value=false;
-              ElMessage("登录失败，账号或者密码错误")
-              return
-            }
-            else {
+            if(res.data.ActionType==="OK"){
               console.log(res.data);
               store.commit("changeUserInfo",res.data.data)
               store.commit("changeGetterRouter",false)
-              router.push('/mainbox')
-/*              mystore.saveToken(res.data.token)
+              router.push('/question/ylhub')
+
+            }
+            else {
+              ElNotification({
+                title: 'Error',
+                message: '登录失败，账号或者密码错误',
+                type: 'error',
+              })
               isload.value=false;
-              router.push('/');*/
             }
           }
           catch (err){
