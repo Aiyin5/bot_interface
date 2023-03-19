@@ -1,27 +1,27 @@
 <template>
   <div>
-    <el-button
+<!--    <el-button
         type="primary"
         size="small"
         @click="handleAdd">
       新增
-    </el-button>
-    <el-button
+    </el-button>-->
+<!--    <el-button
         type="primary"
         size="small"
-        @click="handleGet">获取当前数据</el-button>
+        @click="handleGet">获取当前数据</el-button>-->
     <el-button
         type="primary"
         size="small"
         @click="handleUpdate">
       更新到机器人
     </el-button>
-    <el-button
+<!--    <el-button
         type="primary"
         size="small"
         @click="handleSaveLocal">
       保存至本地
-    </el-button>
+    </el-button>-->
   </div>
   <div>
     <el-table
@@ -85,12 +85,15 @@
 import { ref } from 'vue';
 import axios from "axios";
 import {ElMessage} from "element-plus";
+import {useStore } from 'vuex'
+import {getPreInfo,updatePreInfo,deletPreInfo} from '@/api/bot'
 export default {
   name: 'tableShow',
   mounted() {
     this.handleGet();
   },
   setup() {
+    const store = useStore()
     let total = ref(0);
     const pageSize = ref(10);
     const currentPage = ref(1);
@@ -104,16 +107,14 @@ export default {
     const handleCurrentChange = (val) => {
           currentPage.value = val
     }
-    const handleAdd = () => {
+/*    const handleAdd = () => {
       tableData.value.push({
         id: tableData.value.length + 1,
         name: '1',
         address: '1'
       });
       total.value=tableData.value.length;
-
-
-    };
+    };*/
     const handleUpdate= () => {
       let item={data:"update"}
       axios.post('/app/update',item,{
@@ -130,7 +131,7 @@ export default {
         console.log(error);
       });
     }
-    const getFile=()=>{
+/*    const getFile=()=>{
       let out=[];
       for(let one of tableData.value){
         let cur={};
@@ -147,37 +148,39 @@ export default {
         out.push(str);
       }
       return out;
-    }
+    }*/
     const handleSaveLocal = () => {
-      const blob = new Blob([getFile], { type: "application/json" });
+/*      const blob = new Blob([getFile], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = "表格数据.json";
       link.click();
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url);*/
     }
 
-    const handleEdit = (row) => {
+    const handleEdit = async (row) => {
       let data={
         "data":{
+          "bot_id":store.state.userInfo.bot_id,
           "prompt":row.name,
           "completion":row.address
         },
         "where":{"id":row.id}
       }
-      axios.post('/server/update',data,{
-        headers: {
-          'Content-Type': 'application/json'
-        }}).then(response => {
-        console.log(response);
-        ElMessage('更新成功.')
-      }).catch(error => {
-        // 处理错误
-        ElMessage('更新失败.')
-        //displayText.value=error;
-        console.log(error);
-      });
+      try {
+        let res=await updatePreInfo(data);
+        if(!res.data.ActionType==="OK"){
+          ElMessage.error('更新失败.');
+        }
+        else {
+          ElMessage('更新成功.')
+        }
+      }
+      catch (err){
+        ElMessage.error('更新失败.'+err);
+        console.log(err);
+      }
     };
 
     const handleBlur = () => {
@@ -185,41 +188,40 @@ export default {
       editingRow.value = null;
     };
 
-    const handleChange = () => {
-      // 保存修改后的数据
-    };
-
-    const handleDelete = (row) => {
-      console.log(row);
+    const handleDelete = async (row) => {
       let data={
         "id":row.id
       }
-      axios.post('/server/delete',data,{
-        headers: {
-          'Content-Type': 'application/json'
-        }}).then(response => {
-        console.log(response);
-        ElMessage('删除成功.')
-      }).catch(error => {
-        // 处理错误
-        ElMessage('删除失败.')
-        //displayText.value=error;
-        console.log(error);
-      });
+      try {
+        let res = await deletPreInfo(data);
+        if(!res.data.ActionType==="OK"){
+          ElMessage.error('删除失败.');
+        }
+        else {
+          ElMessage('删除成功.')
+        }
+      }
+      catch (err){
+        ElMessage.error('删除失败.'+err);
+        console.log(err);
+      }
       const index = tableData.value.indexOf(row);
       //console.log(index);
       if (index !== -1) {
-
         tableData.value.splice(index, 1);
       }
       total.value=tableData.value.length;
     };
 
-    const handleGet = ()=>{
+    const handleGet = async ()=>{
       tableData.value=[];
-      axios.get('/server/data').
-      then(response => {
-        let items=response.data;
+      try{
+       let response=await getPreInfo({"bot_id":store.state.userInfo.bot_id});
+       if(!response.data.ActionType===1){
+         ElMessage.error('获取数据失败.')
+         return;
+       }
+        let items=response.data.data;
         for(let item of items){
           tableData.value.push({
             id: item.id,
@@ -229,23 +231,19 @@ export default {
         }
         total.value=tableData.value.length;
         ElMessage('获取数据成功.')
-        // 处理响应
-      }).catch(error => {
-        // 处理错误
-        ElMessage('获取数据失败.'+error)
-        console.log(error);
-      });
+      }
+      catch (err){
+        ElMessage.error('获取数据失败.'+err)
+        console.log(err)
+      }
     }
     return {
       tableData,
       editingRow,
-      handleAdd,
+/*      handleAdd,*/
       handleGet,
       handleEdit,
       handleBlur,
-      handleChange,
-      response: null,
-      error: null,
       handleDelete,
       handleSizeChange,
       handleCurrentChange,

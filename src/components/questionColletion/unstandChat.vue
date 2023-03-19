@@ -87,10 +87,12 @@
 import {ref} from "vue";
 import axios from "axios";
 import {ElMessage} from "element-plus";
-
+import {useStore } from 'vuex'
+import {addMultPreInfo} from '@/api/bot'
 export default {
   name: 'unstandChat',
   setup() {
+    const store = useStore()
     const prompt=ref('');
     const completion=ref('');
     const dialogFormVisible = ref(false);
@@ -173,17 +175,31 @@ export default {
       }
     }
 
-    const upDateToData = ()=>{
+    const upDateToData = async ()=>{
       let data=[];
       for(let item of tableData.value){
         let tableMem={};
         tableMem.prompt=item.prompt;
+        tableMem.bot_id=store.state.userInfo.bot_id;
         tableMem.completion=item.completion;
         tableMem.prompt=tableMem.prompt.replaceAll("，",",");
         tableMem.prompt=tableMem.prompt.toLowerCase();
         data.push(tableMem);
       }
-      axios.post('/server/addMulti',data,{
+      try {
+        let res=await addMultPreInfo(data);
+        if(!res.data.ActionType==="OK"){
+          ElMessage.error('更新失败.');
+        }
+        else {
+          ElMessage('更新成功.')
+        }
+      }
+      catch (err){
+        ElMessage.error('更新失败.'+err);
+        console.log(err);
+      }
+      /*axios.post('/server/addMulti',data,{
         headers: {
           'Content-Type': 'application/json'
         }}).then(response => {
@@ -195,7 +211,7 @@ export default {
         ElMessage('发送失败.')
         //displayText.value=error;
         console.log(error);
-      });
+      });*/
 /*      prompt.value=prompt.value.replaceAll("，",",");
       let content=prompt.value.toLowerCase();
       let data={

@@ -49,7 +49,8 @@
 import {ElSelect, ElOption, ElMessage} from 'element-plus';
 import axios from "axios";
 import {ref} from "vue";
-
+import {useStore } from 'vuex'
+import {getUnstInfo} from '@/api/bot'
 export default {
   components: { ElSelect, ElOption },
   name:"botData",
@@ -57,6 +58,7 @@ export default {
     this.handleGet();
   },
   setup() {
+    const store = useStore()
     const options = ref([]);
     let selectedId = ref("");
     let selectedOption = ref("");
@@ -64,29 +66,34 @@ export default {
     const prompt = ref("");
     const completion = ref("");
     const selectedValue = ref("");
-    const handleGet = () => {
+    const handleGet = async ()=> {
       options.value = [];
-      axios.get('/server/unpre').then(response => {
-        let items = response.data;
-        //console.log(items)
-        for (let item of items) {
-          options.value.push({
-            id: item.id,
-            option: item.keywords,
-            value: item.content
-          });
+      try {
+        let res = await getUnstInfo({"bot_id": store.state.userInfo.bot_id});
+        if (!res.data.ActionType === "OK") {
+          ElMessage("信息获取失败")
+        } else {
+          let items = res.data.data;
+          //console.log(items)
+          for (let item of items) {
+            options.value.push({
+              id: item.id,
+              bot_id: item.bot_id,
+              option: item.keywords,
+              value: item.content
+            });
+          }
         }
-        // 处理响应
-      }).catch(error => {
-        // 处理错误
-        ElMessage('获取数据失败.' + error)
-        console.log(error);
-      });
+      }
+      catch (err){
+        ElMessage("信息获取失败")
+        console.log(err)
+      }
     }
-
     const handleEdit=()=>{
       let data={
         "data":{"keywords":selectedOption.value,
+        "bot_id":store.state.userInfo.bot_id,
         "content":selectedValue.value},
         "where":{"id":selectedId.value}
       }

@@ -32,9 +32,10 @@ import router from '../../router/index.js'
 import {ElMessage} from "element-plus";
 import {login} from "@/api";
 import {useCounterStore} from "@/store/token.js"
-
+import {useStore } from 'vuex'
 export default {
   setup() {
+    const store = useStore()
     const mystore=useCounterStore();
     const loginForm=ref();
     const form =reactive ({
@@ -57,15 +58,19 @@ export default {
           try {
             let res=await login(loginInfo);
             console.log(res);
-            if(!res.status){
+            if(!res.data.ActionType==="OK"){
               isload.value=false;
               ElMessage("登录失败，账号或者密码错误")
               return
             }
             else {
-              mystore.saveToken(res.data.token)
+              console.log(res.data);
+              store.commit("changeUserInfo",res.data.data)
+              store.commit("changeGetterRouter",false)
+              router.push('/mainbox')
+/*              mystore.saveToken(res.data.token)
               isload.value=false;
-              router.push('/');
+              router.push('/');*/
             }
           }
           catch (err){

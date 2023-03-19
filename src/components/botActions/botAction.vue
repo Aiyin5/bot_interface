@@ -52,7 +52,8 @@ import { ref } from 'vue';
 import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
 import { reactive } from 'vue';
 import {Edit} from "@element-plus/icons-vue";
-import axios from "axios";
+import {botInfo} from "@/api";
+import {useStore } from 'vuex'
 export default {
   name: 'botAction',
   mounted() {
@@ -73,6 +74,7 @@ export default {
     ElButton,
   },
   setup() {
+    const store = useStore()
     const editShow=ref(false);
     const formData = reactive({
       name: 'AMA_BOT',
@@ -97,7 +99,8 @@ export default {
           "contents":formData.initInfo,
           "info":"nothing"
         }}
-      axios.post('/server/botInfo',data,{
+      console.log(data)
+      /*axios.post('/server/botInfo',data,{
         headers: {
           'Content-Type': 'application/json'
         }}).then(response => {
@@ -120,26 +123,28 @@ export default {
         ElMessage('更新失败.')
         //displayText.value=error;
         console.log(error);
-      });
-
+      });*/
     }
 
-    const getInfo=()=>{
-      axios.get('/server/botInfo').
-      then(response => {
-        let items = response.data[0];
-        console.log(items);
-        formData.name=items.name;
-        formData.initInfo=items.contents;
-        formData.base64String=items.avatar;
-        const blob = base64ToBlob(formData.base64String, 'image/jpeg');
-        const url = URL.createObjectURL(blob);
-        formData.avatar=url;
-      }).catch(error => {
-        // 处理错误
-        ElMessage('获取机器人数据失败'+error)
-        console.log(error);
-      });
+    const getInfo= async ()=>{
+      try {
+        let res=await botInfo({"bot_id":store.state.userInfo.bot_id});
+        if(!res.data.ActionType==="OK"){
+          ElMessage("信息获取失败")
+        }
+        else {
+          let items=res.data.data;
+          formData.name=items.name;
+          formData.initInfo=items.contents;
+/*          formData.base64String=items.avatar;
+          const blob = base64ToBlob(formData.base64String, 'image/jpeg');
+          const url = URL.createObjectURL(blob);
+          formData.avatar=url;*/
+        }
+      }
+      catch (err){
+        console.log(err)
+      }
     }
     function transFormImage(file){
       const reader = new FileReader();

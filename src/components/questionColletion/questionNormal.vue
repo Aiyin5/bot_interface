@@ -69,10 +69,12 @@
 
 import {ref} from "vue";
 import {ElMessage} from "element-plus";
-import axios from "axios";
+import {addMultPreInfo} from '@/api/bot'
+import {useStore } from 'vuex'
 export default {
   name: 'questionNormal',
   setup() {
+    const store = useStore()
     const loading = ref(false)
     const question= ref('');
     const answer= ref('');
@@ -84,7 +86,7 @@ export default {
       if(question.value!='' && answer.value!=''){
         question.value=question.value.replaceAll("，",",");
         question.value=question.value.toLowerCase();
-        tableData.value.push({"prompt":question.value,"completion":answer.value});
+        tableData.value.push({"prompt":question.value,"completion":answer.value,"bot_id":store.state.userInfo.bot_id});
         question.value='';
         answer.value='';
       }
@@ -92,9 +94,22 @@ export default {
         ElMessage('请输入内容')
       }
     }
-    const handleSend = ()=>{
+    const handleSend = async ()=>{
       let data=tableData.value;
-      axios.post('/server/addMulti',data,{
+      try {
+        let res=await addMultPreInfo(data);
+        if(!res.data.ActionType==="OK"){
+          ElMessage.error('更新失败.');
+        }
+        else {
+          ElMessage('更新成功.')
+        }
+      }
+      catch (err){
+        ElMessage.error('更新失败.'+err);
+        console.log(err);
+      }
+/*      axios.post('/server/addMulti',data,{
         headers: {
           'Content-Type': 'application/json'
         }}).then(response => {
@@ -105,7 +120,7 @@ export default {
         ElMessage('发送失败.')
         //displayText.value=error;
         console.log(error);
-      });
+      });*/
     }
     const handleClean = ()=>{
       tableData.value=[];

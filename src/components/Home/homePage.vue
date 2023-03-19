@@ -35,6 +35,7 @@
       </el-aside>
       <el-container>
         <el-main>
+
           <question-normal v-if="QueNShow"></question-normal>
           <table-show v-if="QueAllShow"></table-show>
           <unstand-chat v-if="QueUShow"></unstand-chat>

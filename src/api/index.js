@@ -1,23 +1,31 @@
 import request from '../utils/request';
 
-export const fetchData = () => {
-    return request({
-        url: './table.json',
-        method: 'get'
-    });
-};
 
 export const login = (loginInfo) => {
     return request({
-        url: '/app/user/login',
+        url: '/app/app/user/login',
         method: 'POST',
         data:loginInfo
     });
 };
 export const register = (registerInfo) => {
     return request({
-        url: '/app/user/login',
+        url: '/app/user/register',
         method: 'POST',
         data:registerInfo
+    });
+};
+export const botInfo = (bot_id) => {
+    return request({
+        url: '/app/app/bot/bot',
+        method: 'POST',
+        data:bot_id
+    });
+};
+export const updateBotInfo = (botInfo) => {
+    return request({
+        url: '/app/app/bot/updateBotInfo',
+        method: 'POST',
+        data:botInfo
     });
 };

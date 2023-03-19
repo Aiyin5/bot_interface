@@ -22,6 +22,8 @@
     "simple-git": "^3.16.1",
     "vue": "^3.2.13",
     "vue-router": "^4.1.6",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0",
     "webpack": "^5.75.0"
   },
   "devDependencies": {
