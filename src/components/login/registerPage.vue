@@ -63,6 +63,15 @@ export default {
             "bot_id":"0",
             "level":2
           }
+          if(form.password!=form.confirmword){
+            ElNotification({
+              title: 'Error',
+              message: '两次密码不一致',
+              type: 'error',
+            })
+            isload.value=false;
+            return
+          }
           try {
             let res=await register(regInfo);
             if(res.data.ActionType==="OK"){
