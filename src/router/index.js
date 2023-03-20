@@ -45,7 +45,7 @@ export const router = createRouter({
 })*/
 
 router.beforeEach((to, from, next) => {
-    if (to.name === "login") {
+    if (to.name === "login" || to.name === "register" ) {
         next()
     } else {
         //如果授权(已经登录过了) next()
@@ -93,7 +93,7 @@ const ConfigRouter = () => {
 
 const checkPermission = (item)=>{
     if(item.requireAdmin){
-        return store.state.userInfo.role===1
+        return store.state.userInfo.bot_id!="0"
     }
     return true
 }

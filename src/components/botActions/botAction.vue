@@ -42,6 +42,10 @@
                  @click="handleConform">
         保存
       </el-button>
+      <el-button  type="primary"  style="margin-left: 50px;float: right"
+                  @click="reBot">
+        重启机器人
+      </el-button>
     </el-form>
   </div>
 
@@ -90,6 +94,9 @@ export default {
     }
     const handleCancel= ()=>{
       editShow.value=false;
+    }
+    const reBot=()=>{
+      ElMessage("暂时没有实现")
     }
     const handleConform= ()=>{
       let data= {"data":{
@@ -211,6 +218,7 @@ export default {
       httpRequest,
       transFormImage,
       base64ToBlob,
+      reBot,
     };
   }
 };

@@ -10,7 +10,7 @@
     </el-col>
     <el-col :span="14">
       <div class="login-container">
-        <el-form class="login-form" size="large" :model="form" :rules="rules" ref="loginForm">
+        <el-form class="login-form" size="large" :model="form" :rules="rules" ref="regForm">
           <label style="margin-bottom: 20px">注册</label>
           <el-form-item class="form-group" prop="name">
             <el-input placeholder="昵称" id="name" v-model="form.name" />
@@ -34,53 +34,63 @@
 <script>
 import {reactive, ref} from 'vue';
 import router from '../../router/index.js'
-import {ElMessage} from "element-plus";
+import {ElNotification} from "element-plus";
 import {register} from "@/api";
-import {useCounterStore} from "@/store/token.js"
+import {useStore} from "vuex";
 
 export default {
   name:"registerPage",
   setup() {
-    const mystore=useCounterStore();
+    const store = useStore()
     const form =reactive ({
       password: '',
       email:'',
       confirmword:'',
       name:''
     })
+    const regForm=ref();
     const isload=ref(false);
     const item = ref('')
     const url =require('@/assets/ama_bot.jpg')
     const handleSubmit = async () => {
       isload.value=true;
-      if(!form.email || !form.password){
-        ElMessage("请输入账号和密码")
-        isload.value=false;
-        return
-      }
-      const loginInfo={
-        "email":form.email,
-        "password":form.password
-      }
-      try {
-        let res=await register(loginInfo);
-        console.log(res);
-        if(!res.status){
-          isload.value=false;
-          ElMessage("登录失败，账号或者密码错误")
-          return
+      await regForm.value.validate(async (valid)=>{
+        if(valid){
+          const regInfo={
+            "name":form.name,
+            "email":form.email,
+            "password":form.password,
+            "bot_id":"0",
+            "level":2
+          }
+          try {
+            let res=await register(regInfo);
+            if(res.data.ActionType==="OK"){
+              console.log(res.data);
+              store.commit("changeUserInfo",regInfo)
+              store.commit("changeGetterRouter",false)
+              router.push('/question/ylhub')
+            }
+            else {
+              ElNotification({
+                title: 'Error',
+                message: '注册失败,请换个邮箱',
+                type: 'error',
+              })
+              isload.value=false;
+            }
+          }
+          catch (err){
+            ElNotification({
+              title: 'Error',
+              message: '注册失败,请换个邮箱',
+              type: 'error',
+            })
+            isload.value=false;
+          }
         }
-        else {
-          mystore.saveToken(res.data.token)
-          isload.value=false;
-          router.push('/homePage');
-        }
-      }
-      catch (err){
-        isload.value=false;
-      }
-
-
+      })
+      isload.value=false;
     }
     const rules = reactive({
       email: [
@@ -91,6 +101,14 @@ export default {
         { required: true, message: '请输入密码', trigger: 'blur' },
         { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: ['blur', 'change'] },
       ],
+      confirmword: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: ['blur', 'change'] },
+      ],
+      name: [
+        { required: true, message: '请输入昵称', trigger: 'blur' },
+        { min: 1, max: 20, message: '密码长度在 6 到 20 个字符', trigger: ['blur', 'change'] },
+      ],
     })
     return {
       handleSubmit,
@@ -99,7 +117,7 @@ export default {
       form,
       item,
       isload,
-      mystore,
+      regForm,
     }
   }
 }

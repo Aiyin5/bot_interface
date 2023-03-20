@@ -5,6 +5,8 @@ import tableShow from "@/components/tableShow.vue";
 import botAction from "@/components/botActions/botAction.vue";
 import NotFound from '../view/notfound/NotFound.vue'
 import Center from "@/view/user/Center.vue";
+import userControl from "@/view/user/userControl.vue";
+import lateUpdate from "@/view/lateUpdate/lateUpdate.vue";
 const  routes = [
 /*    {
         path:"/index",
@@ -15,32 +17,50 @@ const  routes = [
         component:Center
     },
     {
+        path:"/userControl",
+        component:userControl
+    },
+    {
         path:"/question/ylhub",
         component:botData,
-        requireAdmin:false
+        requireAdmin:true
     },
     {
         path:"/question/translate",
         component:unstandChat,
-        requireAdmin:false
+        requireAdmin:true
     },
 
     {
         path:"/question/stquestion",
-        component:questionNormal
+        component:questionNormal,
+        requireAdmin:true
     },
     {
         path:"/question/qshub",
-        component:tableShow
+        component:tableShow,
+        requireAdmin:true
     },
 
-/*    {
-        path:"/product-manage/addproduct",
-        component:ProductAdd
-    },*/
+    {
+        path:"/bot/other",
+        component:lateUpdate,
+        requireAdmin:true
+    },
+    {
+        path:"/model/setup",
+        component:lateUpdate,
+        requireAdmin:true
+    },
+    {
+        path:"/question/cmquestion",
+        component:lateUpdate,
+        requireAdmin:true
+    },
     {
         path:"/bot/setup",
-        component:botAction
+        component:botAction,
+        requireAdmin:true
     },
     {
         path:"/",

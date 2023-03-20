@@ -18,7 +18,8 @@
             <el-input  placeholder="密码" type="password" v-model="form.password" />
           </el-form-item>
           <el-button class="subbutton" :loading="isload" type="primary"  @click="handleSubmit(loginForm)">登录</el-button>
-          <el-link href="http://localhost:8080/#/register" :underline="false">还没有账号？注册一个</el-link>
+          <el-row class="link-info">还没有账号？<el-link class="link-content" href="#/register" :underline="false">注册一个</el-link></el-row>
+
         </el-form>
       </div>
     </el-col>
@@ -28,7 +29,6 @@
 <script>
 import {reactive, ref} from 'vue';
 import router from '../../router/index.js'
-//import {useRoute} from "vue-router";
 import {login} from "@/api";
 import {useCounterStore} from "@/store/token.js"
 import {useStore } from 'vuex'
@@ -159,5 +159,14 @@ label {
 .imageview{
   position: relative;
   margin-top: 20px;
+}
+.link-info{
+  font-size: 15px;
+  margin-left: 20px;
+}
+.link-content{
+  font-size: 15px;
+  font-weight: bold;
+  color:blue;
 }
 </style>

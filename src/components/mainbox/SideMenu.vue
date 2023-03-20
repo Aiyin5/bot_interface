@@ -35,6 +35,12 @@
               </el-icon>
               <span>个人中心</span>
             </el-menu-item>
+            <el-menu-item index="/userControl">
+              <el-icon>
+                <UserFilled />
+              </el-icon>
+              <span>成员管理</span>
+            </el-menu-item>
           </el-menu>
         </el-scrollbar>
       </el-aside>
