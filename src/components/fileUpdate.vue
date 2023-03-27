@@ -37,7 +37,7 @@
     </el-table-column>
   </el-table>
   <el-dialog v-model="dialogFormVisible" title="预览数据库中存的语料">
-    <el-input v-model="content" autocomplete="off" type="textarea" rows="6" :disabled="true" />
+    <el-input v-model="content" autocomplete="off" type="textarea" rows="15" :disabled="true" />
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
