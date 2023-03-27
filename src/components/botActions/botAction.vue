@@ -34,6 +34,9 @@
       <el-form-item label="新成员加入后的自动引导内容"  style="position: relative; margin-top: -10px;">
         <el-input v-model="formData.initInfo" type="textarea" rows="6" :disabled="!editShow" />
       </el-form-item>
+      <el-form-item label="机器人邀请链接，可以通过这个链接邀请机器人到你的Discord中" style="position: relative; margin-top: -10px;">
+        <el-input v-model="formData.link"  :disabled="true" />
+      </el-form-item>
       <el-button  v-if="editShow" type="primary" size="small" style="float:left;"
                  @click="handleCancel">
         取消
@@ -143,6 +146,7 @@ export default {
           let items=res.data.data;
           formData.name=items.name;
           formData.initInfo=items.contents;
+          formData.link=items.info;
 /*          formData.base64String=items.avatar;
           const blob = base64ToBlob(formData.base64String, 'image/jpeg');
           const url = URL.createObjectURL(blob);

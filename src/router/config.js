@@ -7,6 +7,7 @@ import NotFound from '../view/notfound/NotFound.vue'
 import Center from "@/view/user/Center.vue";
 import userControl from "@/view/user/userControl.vue";
 import lateUpdate from "@/view/lateUpdate/lateUpdate.vue";
+import yuLiao from "@/components/chatModel/yuLiao.vue";
 const  routes = [
 /*    {
         path:"/index",
@@ -22,7 +23,7 @@ const  routes = [
     },
     {
         path:"/question/ylhub",
-        component:botData,
+        component:yuLiao,
         requireAdmin:true
     },
     {
