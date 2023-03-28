@@ -49,9 +49,22 @@
                   @click="reBot">
         重启机器人
       </el-button>
+      <el-button
+          type="primary"
+          style="margin-left: 50px;float: right"
+          @click="handleBotUpdate">
+        更新机器人的数据
+      </el-button>
     </el-form>
   </div>
-
+  <el-dialog v-model="dialogFormVisible" title="更新机器人数据">
+    请通过Discord，对机器人执行/更新机器人命令进行更新
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -83,6 +96,7 @@ export default {
   setup() {
     const store = useStore()
     const editShow=ref(false);
+    const dialogFormVisible = ref(false);
 
     const formData = reactive({
       name: 'AMA_BOT',
@@ -100,6 +114,10 @@ export default {
     const reBot=()=>{
       ElMessage("暂时没有实现")
     }
+
+    const handleBotUpdate=()=>{
+      dialogFormVisible.value = true;
+    }
     const handleConform=async ()=>{
       let data= {"data":{
           "name":formData.name,
@@ -111,7 +129,6 @@ export default {
       "where":{
         "bot_id":store.state.userInfo.bot_id
       }}
-      console.log(data);
       try {
         const response=await updateBotInfo(data);
         if(!response.data.ActionType===1){
@@ -156,12 +173,15 @@ export default {
     }
     async function httpRequest (data) {
       let file = data.file
-      const url = URL.createObjectURL(file);
+      console.log(file)
+      //file.name="testimage"
       const skey="A92655d7f490EBab3478d97c9a20c57b";
+      let avatarUrl = URL.createObjectURL(file);
       let postData={
-          "key":skey.toLowerCase(),
-        "image":url
+        "key":skey.toLowerCase(),
+        "image":avatarUrl
       }
+      console.log(postData)
       try {
         let res = await postAvator(postData);
         //console.log(res.data);
@@ -178,6 +198,7 @@ export default {
         console.log(err)
       }
     }
+
     function handleUploadError(error) {
       this.$message.error('头像上传失败，请稍后再试')
       console.error(error)
@@ -205,6 +226,8 @@ export default {
       getInfo,
       httpRequest,
       reBot,
+      handleBotUpdate,
+      dialogFormVisible
     };
   }
 };

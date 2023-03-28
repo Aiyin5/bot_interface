@@ -45,7 +45,7 @@ export const router = createRouter({
 })*/
 
 router.beforeEach((to, from, next) => {
-    if (to.name === "login" || to.name === "register" ) {
+    if (to.name === "login" || to.name === "register" || to.name === "testimage") {
         next()
     } else {
         //如果授权(已经登录过了) next()
@@ -56,7 +56,6 @@ router.beforeEach((to, from, next) => {
             })
         } else {
             if (!store.state.isGetterRouter) {
-
                 //删除所有的嵌套路由
                 //mainbox
                 router.removeRoute("mainbox")

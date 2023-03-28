@@ -1,29 +1,5 @@
 <template>
   <div>
-<!--    <el-button
-        type="primary"
-        size="small"
-        @click="handleAdd">
-      新增
-    </el-button>-->
-<!--    <el-button
-        type="primary"
-        size="small"
-        @click="handleGet">获取当前数据</el-button>-->
-    <el-button
-        type="primary"
-        size="small"
-        @click="handleUpdate">
-      更新到机器人
-    </el-button>
-<!--    <el-button
-        type="primary"
-        size="small"
-        @click="handleSaveLocal">
-      保存至本地
-    </el-button>-->
-  </div>
-  <div>
     <el-table
         :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
         border
@@ -116,7 +92,8 @@ export default {
       total.value=tableData.value.length;
     };*/
     const handleUpdate= () => {
-      let item={data:"update"}
+
+     /* let item={data:"update"}
       axios.post('/server/update',item,{
         headers: {
           'Content-Type': 'application/json'
@@ -129,7 +106,7 @@ export default {
         // 处理错误
         ElMessage('更新失败.'+error)
         console.log(error);
-      });
+      });*/
     }
 /*    const getFile=()=>{
       let out=[];
