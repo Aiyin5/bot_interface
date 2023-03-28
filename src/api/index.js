@@ -32,8 +32,16 @@ export const botInfo = (bot_id) => {
 
 export const updateBotInfo = (botInfo) => {
     return request({
-        url: '/app/app/bot/updateBotInfo',
+        url: '/app/app/bot/updateBot',
         method: 'POST',
         data:botInfo
+    });
+};
+
+export const postAvator = (ava) => {
+    return request({
+        url: '/avator',
+        method: 'POST',
+        params:ava
     });
 };

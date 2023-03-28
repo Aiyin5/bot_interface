@@ -15,7 +15,7 @@
         <el-input v-model="formData.name" :disabled="!editShow" style="max-width: 100px" />
       </el-form-item>
       <el-form-item label="头像">
-        <el-avatar :size="80" :src="formData.avatar" />
+        <el-avatar :size="80" :src="formData.avatarUrl" />
       </el-form-item>
       <el-form-item>
         <el-upload
@@ -23,7 +23,7 @@
             :show-file-list="false"
             :before-upload="beforeUpload"
             :on-error="handleUploadError"
-            action="#"
+            action="https://api.imgbb.com/1/upload"
             :http-request="httpRequest"
         >
           <el-button type="primary" size="small" v-if="editShow" style="float:left;">
@@ -59,7 +59,7 @@ import { ref } from 'vue';
 import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
 import { reactive } from 'vue';
 import {Edit} from "@element-plus/icons-vue";
-import {botInfo} from "@/api";
+import {botInfo,postAvator,updateBotInfo} from "@/api";
 import {useStore } from 'vuex'
 export default {
   name: 'botAction',
@@ -83,14 +83,13 @@ export default {
   setup() {
     const store = useStore()
     const editShow=ref(false);
+
     const formData = reactive({
       name: 'AMA_BOT',
-      avatar: '123',
+      avatarUrl: '/default-avatar.jpg',
       initInfo: '--------------------------------',
       base64String:'',
-    })
-    const state = reactive({
-      avatarUrl: '/default-avatar.jpg',
+      link:""
     })
     const editBaseInfo=()=>{
       editShow.value=true;
@@ -101,41 +100,30 @@ export default {
     const reBot=()=>{
       ElMessage("暂时没有实现")
     }
-    const handleConform= ()=>{
+    const handleConform=async ()=>{
       let data= {"data":{
           "name":formData.name,
-          "avatar":formData.base64String,
+          "avatar":formData.avatarUrl,
           "status":"0",
           "contents":formData.initInfo,
-          "info":"nothing"
-        }}
-      console.log(data)
-      /*axios.post('/server/botInfo',data,{
-        headers: {
-          'Content-Type': 'application/json'
-        }}).then(response => {
-        console.log(response);
-        axios.post('/api/botInfo', {"data":"update"},{
-          headers: {
-            'Content-Type': 'application/json'
-          }}).then(response => {
-          console.log(response);
-          ElMessage('更新成功.')
-          editShow.value=false;
-        }).catch(error => {
-          // 处理错误
-          ElMessage('更新失败.')
-          //displayText.value=error;
-          console.log(error);
-        });
-      }).catch(error => {
-        // 处理错误
-        ElMessage('更新失败.')
-        //displayText.value=error;
-        console.log(error);
-      });*/
+          "info":formData.link
+        },
+      "where":{
+        "bot_id":store.state.userInfo.bot_id
+      }}
+      console.log(data);
+      try {
+        const response=await updateBotInfo(data);
+        if(!response.data.ActionType===1){
+          ElMessage.error('更新失败.请重试')
+          return;
+        }
+        ElMessage.success("更新成功")
+      }
+      catch (err){
+        ElMessage.error('更新失败.请重试')
+      }
     }
-
     const getInfo= async ()=>{
       try {
         let res=await botInfo({"bot_id":store.state.userInfo.bot_id});
@@ -147,23 +135,12 @@ export default {
           formData.name=items.name;
           formData.initInfo=items.contents;
           formData.link=items.info;
-/*          formData.base64String=items.avatar;
-          const blob = base64ToBlob(formData.base64String, 'image/jpeg');
-          const url = URL.createObjectURL(blob);
-          formData.avatar=url;*/
+          formData.avatarUrl = items.avatar;
         }
       }
       catch (err){
         console.log(err)
       }
-    }
-    function transFormImage(file){
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64String = event.target.result;
-        formData.base64String = base64String;
-      },
-      reader.readAsDataURL(file);
     }
     function beforeUpload(file) {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -177,22 +154,30 @@ export default {
       }
       return isJpgOrPng && isLt2M
     }
-    function httpRequest (data) {
+    async function httpRequest (data) {
       let file = data.file
-      transFormImage(file)
       const url = URL.createObjectURL(file);
-      formData.avatar=url;
-    }
-    function base64ToBlob(base64String, type = 'image/jpeg') {
-      const bytes = window.atob(base64String.split(',')[1]);
-      const arrayBuffer = new ArrayBuffer(bytes.length);
-      const uint8Array = new Uint8Array(arrayBuffer);
-      for (let i = 0; i < bytes.length; i++) {
-        uint8Array[i] = bytes.charCodeAt(i);
+      const skey="A92655d7f490EBab3478d97c9a20c57b";
+      let postData={
+          "key":skey.toLowerCase(),
+        "image":url
       }
-      return new Blob([arrayBuffer], { type });
+      try {
+        let res = await postAvator(postData);
+        //console.log(res.data);
+        if(res.success){
+          formData.avatarUrl = res.data.url;
+          ElMessage.success("头像上传成功")
+        }
+        else {
+          ElMessage.error("头像上传失败")
+        }
+      }
+      catch (err){
+        ElMessage.error("头像上传失败")
+        console.log(err)
+      }
     }
-
     function handleUploadError(error) {
       this.$message.error('头像上传失败，请稍后再试')
       console.error(error)
@@ -210,7 +195,6 @@ export default {
 
     return {
       submitForm,
-      state,
       editShow,
       formData,
       beforeUpload,
@@ -220,8 +204,6 @@ export default {
       handleConform,
       getInfo,
       httpRequest,
-      transFormImage,
-      base64ToBlob,
       reBot,
     };
   }
