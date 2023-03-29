@@ -26,6 +26,11 @@
     </el-table-column>
     <el-table-column
                      label="操作">
+      <template #header>
+        <el-input v-model="search" size="small" placeholder="input search info" style="width: 40%;"/>
+        <el-button type="primary" :icon="Search" size="small" @click="searchDoc" style="margin-left: 10px">Search</el-button>
+        <el-button type="primary" size="small" @click="ReSetDoc">Reset</el-button>
+      </template>
       <template #default="scope">
         <el-button size="small" @click="handleDelete(scope.$index, scope.row)">
           删除
@@ -37,7 +42,8 @@
     </el-table-column>
   </el-table>
   <el-dialog v-model="dialogFormVisible" title="预览数据库中存的语料">
-    <el-input v-model="content" autocomplete="off" type="textarea" rows="15" :disabled="true" />
+    <div v-html="content"></div>
+<!--    <el-input v-model="content" autocomplete="off" type="textarea" rows="15" :disabled="true" />-->
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -50,7 +56,7 @@
 <script>
 import { UploadFilled } from '@element-plus/icons-vue'
 import {useStore } from 'vuex'
-import {ref} from "vue";
+import {ref,computed} from "vue";
 import {ElMessage} from "element-plus";
 import {fileInfo,updateBotInfo,deleteFileInfo} from '@/api/file'
 import * as PdfJs from 'pdfjs-dist/legacy/build/pdf.js'
@@ -65,6 +71,25 @@ export default {
     const store = useStore()
     const tableData=ref([])
     const content=ref('');
+    const search = ref('')
+    const orgData=ref([])
+    const searchDoc = () =>{
+      if(!search.value){
+        return;
+      }
+      tableData.value=[];
+      for (let item of orgData.value){
+        if(item.content.includes(search.value)){
+          tableData.value.push(item);
+        }
+      }
+    }
+    const ReSetDoc = ()=>{
+      search.value='';
+      for(let item of orgData.value){
+        tableData.value.push(item);
+      }
+    }
     const getFileInfo = async ()=>{
       try {
         let response=await fileInfo({"bot_id":store.state.userInfo.bot_id})
@@ -80,6 +105,11 @@ export default {
             doc_name: item.doc_name,
             content: item.content
           });
+          orgData.value.push({
+            id: item.id,
+            doc_name: item.doc_name,
+            content: item.content
+          })
         }
       }
       catch (err){
@@ -162,6 +192,8 @@ export default {
     }
    const handlePreView = (index,  item)=>{
        content.value=item.content;
+       const regExp = new RegExp(search.value, 'g')
+       content.value = item.content.replace(regExp, `<span style="background: yellow;">${search.value}</span>`);
        dialogFormVisible.value = true;
    }
 
@@ -194,8 +226,14 @@ export default {
       handlePreView,
       dialogFormVisible,
       handleDelete,
+      search,
+      ReSetDoc,
+      searchDoc
     }
   }
 }
 </script>
 
+<style scoped>
+
+</style>
