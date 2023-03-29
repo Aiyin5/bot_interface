@@ -65,7 +65,7 @@ const  routes = [
     },
     {
         path:"/",
-        redirect:"/index"
+        redirect:"/question/ylhub"
     },
     { 
         path:"/:pathMatch(.*)*",
