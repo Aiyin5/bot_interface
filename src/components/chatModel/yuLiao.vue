@@ -9,7 +9,7 @@
 <script>
 import { ref } from 'vue'
 import BotData from "@/components/chatModel/botData.vue";
-import FileUpload from "@/components/fileUpdate.vue";
+import FileUpload from "@/components/yuLiao/fileUpdate.vue";
 export default {
 name:"yuLiao",
   components: {FileUpload, BotData},

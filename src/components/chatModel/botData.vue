@@ -50,7 +50,7 @@ import {ElSelect, ElOption, ElMessage} from 'element-plus';
 import axios from "axios";
 import {ref} from "vue";
 import {useStore } from 'vuex'
-import {getUnstInfo} from '@/api/bot'
+import {getUnstInfo,updateUnstInfo,addUnstInfo} from '@/api/bot'
 export default {
   components: { ElSelect, ElOption },
   name:"botData",
@@ -90,41 +90,49 @@ export default {
         console.log(err)
       }
     }
-    const handleEdit=()=>{
+    const handleEdit=async ()=>{
       let data={
         "data":{"keywords":selectedOption.value,
         "bot_id":store.state.userInfo.bot_id,
         "content":selectedValue.value},
         "where":{"id":selectedId.value}
       }
-      axios.put('/server/unpre',data).then(response => {
-        console.log(response)
-        ElMessage('更新成功')
-      }).catch(error => {
-        // 处理错误
-        ElMessage('更新失败.' + error)
-        console.log(error);
-      });
+      try {
+        let res = await updateUnstInfo(data);
+        if (!res.data.ActionType === "OK") {
+          ElMessage.error("更新失败，请重试")
+        } else {
+          await handleGet()
+          ElMessage.success("更新成功")
+          }
+        }
+      catch (err){
+        ElMessage("更新失败，请重试")
+        console.log(err)
+      }
     }
     const handleAdd=()=>{
       dialogFormVisible.value=true;
     }
-    const addDataToSer=()=>{
+    const addDataToSer=async ()=>{
       let data={
+        "bot_id":store.state.userInfo.bot_id,
         "keywords":prompt.value,
         "content":completion.value
       }
-      axios.post('/server/unpre',data).then(response => {
-        console.log(response);
-        dialogFormVisible.value=false;
-        ElMessage('新增成功.')
-        handleGet();
-        // 处理响应
-      }).catch(error => {
+      try {
+        let res = await addUnstInfo(data);
+        if (!res.data.ActionType === "OK") {
+          ElMessage.error("添加失败，请重试")
+        } else {
+          await handleGet()
+          ElMessage.success("添加成功")
+        }
+      }
+      catch(error){
         // 处理错误
-        ElMessage('获取数据失败.' + error)
-        console.log(error);
-      });
+        ElMessage.error('添加失败.' + error)
+      }
     }
       const handleChange=()=>{
         // 可以在这里执行选择框选项变化时需要的操作
