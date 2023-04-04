@@ -42,7 +42,7 @@
     </el-table-column>
   </el-table>
   <el-dialog v-model="dialogFormVisible" title="预览数据库中存的语料">
-    <div v-html="content"></div>
+    <div v-html="content" style="text-align: left"></div>
 <!--    <el-input v-model="content" autocomplete="off" type="textarea" rows="15" :disabled="true" />-->
     <template #footer>
       <span class="dialog-footer">
@@ -200,7 +200,7 @@ export default {
    const handleDelete =async (index,  item)=>{
      console.log(item);
      try {
-       let response=await deleteFileInfo({"id":item.id})
+       let response=await deleteFileInfo({"id":item.id,"doc_name":item.doc_name})
        if(!response.data.ActionType===1){
          ElMessage.error('删除失败.')
          return;

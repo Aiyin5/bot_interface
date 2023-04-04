@@ -3,16 +3,17 @@
     <el-tab-pane label="当前语料库（即将遗弃）" name="first"><BotData /></el-tab-pane>
     <el-tab-pane label="PDF上传" name="second"><file-upload /></el-tab-pane>
     <el-tab-pane label="文本更新" name="third">文本更新</el-tab-pane>
-    <el-tab-pane label="Notion" name="fourth">Notion</el-tab-pane>
+    <el-tab-pane label="Notion" name="fourth"><notion-update/></el-tab-pane>
   </el-tabs>
 </template>
 <script>
 import { ref } from 'vue'
 import BotData from "@/components/chatModel/botData.vue";
 import FileUpload from "@/components/yuLiao/fileUpdate.vue";
+import NotionUpdate from "@/components/yuLiao/notionUpdate.vue";
 export default {
 name:"yuLiao",
-  components: {FileUpload, BotData},
+  components: {NotionUpdate, FileUpload, BotData},
   setup() {
     const activeName = ref('first')
     const handleClick = (tab,event) => {

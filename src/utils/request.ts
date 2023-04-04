@@ -21,8 +21,12 @@ const service = axios.create({
 service.interceptors.request.use(function (config) {
     // Do something before request is sent
     const token = localStorage.getItem("token")
-    config.headers.Authorization = `Bearer ${token}`
+    if(!config.headers.Authorization){
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    else {
 
+    }
     return config;
 }, function (error) {
     // Do something with request error

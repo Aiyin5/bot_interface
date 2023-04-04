@@ -30,3 +30,27 @@ export const deleteFileInfo = (fileInfo) => {
         data:fileInfo
     });
 };
+
+export const notionInfo = (bot_id) => {
+    return request({
+        url: '/app/app/notion/botnotion',
+        method: 'POST',
+        data:bot_id
+    });
+};
+
+export const addNotionInfo = (notionInfo) => {
+    return request({
+        url: '/app/app/notion/creat',
+        method: 'POST',
+        data:fileInfo
+    });
+};
+
+export const deleteNotionInfo = (notionInfo) => {
+    return request({
+        url: '/app/app/notion/deleteNotion',
+        method: 'POST',
+        data:notionInfo
+    });
+};

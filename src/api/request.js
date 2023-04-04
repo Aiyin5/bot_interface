@@ -3,7 +3,7 @@ import axios from 'axios'
 // create an axios instance
 const service = axios.create({
     baseURL: 'https://raw.githubusercontent.com/Aiyin5/DiscordBot_Aiyin/main/data',
-    timeout: 5000 // request timeout
+    timeout: 15000 // request timeout
 })
 
 // request interceptor
