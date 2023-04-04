@@ -1,6 +1,6 @@
 <template>
-  <el-input v-model="input" placeholder="Please input notion token" />
-  <el-input v-model="token" placeholder="Please input doc_name" />
+  <el-input v-model="token" placeholder="Please input notion token" />
+  <el-input v-model="input" placeholder="Please input doc_name" />
   <el-input v-model="pageInfo" placeholder="Please input notion pageId" />
   <el-button  @click="AddNewPage">
     新增

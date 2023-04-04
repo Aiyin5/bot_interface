@@ -1,4 +1,3 @@
-import axios from "axios";
 
 export const read_block = async (block_id,token, num_tabs = 0) =>{
     const BLOCK_CHILD_URL_TMPL = "/notion/blocks/{block_id}/children"
@@ -15,7 +14,7 @@ export const read_block = async (block_id,token, num_tabs = 0) =>{
         const block_url = BLOCK_CHILD_URL_TMPL.replace("{block_id}", cur_block_id);
         const query_dict = {};
 
-        const res = await axios.get(block_url, {
+        const res = await fetch(block_url, {
             method: "GET",
             headers: headers
             //body: JSON.stringify(query_dict)
