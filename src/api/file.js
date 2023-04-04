@@ -43,7 +43,7 @@ export const addNotionInfo = (notionInfo) => {
     return request({
         url: '/app/app/notion/creat',
         method: 'POST',
-        data:fileInfo
+        data:notionInfo
     });
 };
 

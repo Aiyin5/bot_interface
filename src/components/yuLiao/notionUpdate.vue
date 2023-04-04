@@ -2,7 +2,7 @@
   <el-input v-model="token" placeholder="Please input notion token" />
   <el-input v-model="input" placeholder="Please input doc_name" />
   <el-input v-model="pageInfo" placeholder="Please input notion pageId" />
-  <el-button  @click="AddNewPage">
+  <el-button  @click="AddNewPage" :loading="isload">
     新增
   </el-button>
   <el-table :data="tableData" border style="width: 100%;height: 300px">
@@ -36,7 +36,7 @@
     <!--    <el-input v-model="content" autocomplete="off" type="textarea" rows="15" :disabled="true" />-->
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button @click="dialogFormVisible = false" >取消</el-button>
       </span>
     </template>
   </el-dialog>
@@ -45,10 +45,12 @@
 import { ref } from 'vue'
 import {useStore } from 'vuex'
 import {ElMessage} from "element-plus";
-import {addNotionInfo, deleteFileInfo, deleteNotionInfo, notionInfo} from "../../api/file"
-import {getHashFromArticle,read_block} from "../../utils/notion"
+import {addNotionInfo, deleteNotionInfo, notionInfo} from "../../api/file"
 export default {
   name:"notionUpdate",
+  mounted() {
+    this.getNotionInfo();
+  },
   setup() {
     const input = ref('')
     const pageInfo = ref('')
@@ -59,15 +61,33 @@ export default {
     const content=ref('');
     const search = ref('')
     const orgData=ref([])
+    const isload=ref(false);
     const AddNewPage = async ()=>{
       //
+      isload.value=true;
       try {
-        console.log("start")
-        let res = await read_block(pageInfo.value,token.value);
-        console.log(res)
+          let data={
+            "token":token.value,
+            "page_id":pageInfo.value,
+            "bot_id":store.state.userInfo.bot_id,
+            "doc_name":input.value
+          }
+          let res =  await addNotionInfo(data);
+          if(res.data.ActionType==="OK"){
+            let dataInfo=res.data.data;
+            console.log(dataInfo)
+            tableData.value.push(dataInfo)
+            ElMessage.success("新增数据成功")
+          }
+          else {
+            ElMessage.error("获取数据失败")
+          }
+          isload.value=false;
       }
       catch (err){
         console.log(err)
+        ElMessage.error("获取数据失败")
+        isload.value=false;
       }
 
     }
@@ -106,16 +126,8 @@ export default {
         tableData.value=[];
         let items=response.data.data;
         for(let item of items){
-          tableData.value.push({
-            id: item.id,
-            doc_name: item.doc_name,
-            content: item.content
-          });
-          orgData.value.push({
-            id: item.id,
-            doc_name: item.doc_name,
-            content: item.content
-          })
+          tableData.value.push(item);
+          orgData.value.push(item)
         }
       }
       catch (err){
@@ -125,7 +137,7 @@ export default {
     const handleDelete =async (index,  item)=>{
       console.log(item);
       try {
-        let response=await deleteNotionInfo({"id":item.id,"doc_name":item.doc_name})
+        let response=await deleteNotionInfo({"page_id":item.page_id,"doc_name":item.doc_name})
         if(!response.data.ActionType===1){
           ElMessage.error('删除失败.')
           return;
@@ -147,13 +159,15 @@ export default {
       AddNewPage,
       tableData,
       content,
+      getNotionInfo,
       handlePreView,
       dialogFormVisible,
       handleDelete,
       search,
       ReSetDoc,
       searchDoc,
-      token
+      token,
+      isload
     }
   }
 }

@@ -12,12 +12,9 @@ export const read_block = async (block_id,token, num_tabs = 0) =>{
 
     while (!done) {
         const block_url = BLOCK_CHILD_URL_TMPL.replace("{block_id}", cur_block_id);
-        const query_dict = {};
-
         const res = await fetch(block_url, {
             method: "GET",
             headers: headers
-            //body: JSON.stringify(query_dict)
         });
 
         const data = await res.json();
