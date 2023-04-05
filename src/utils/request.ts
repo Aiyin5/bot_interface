@@ -1,7 +1,7 @@
 import axios from 'axios';
 /*import {useCounterStore} from "../store/token.js"*/
 const service = axios.create({
-    timeout: 15000
+    timeout: 35000
 });
 
 /*service.interceptors.request.use(

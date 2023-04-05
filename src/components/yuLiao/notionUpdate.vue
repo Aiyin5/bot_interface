@@ -1,7 +1,14 @@
 <template>
-  <el-input v-model="token" placeholder="Please input notion token" />
-  <el-input v-model="input" placeholder="Please input doc_name" />
-  <el-input v-model="pageInfo" placeholder="Please input notion pageId" />
+  <el-input v-model="token" placeholder="Please input notion token" style="width: 40%;float:left;margin-left: 1px"/>
+  <el-input v-model="input" placeholder="Please input doc_name" style="width: 40%;float:left;margin-left: 1px"/>
+  <el-input v-model="pageInfo" placeholder="Please input notion pageId" style="width: 40%;float:left;margin-left: 1px"/>
+  <el-switch
+      v-model="value1"
+      inline-prompt
+      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949;float:left;margin-left: 1px"
+      active-text="只搜集当前页面"
+      inactive-text="搜索子页面"
+  />
   <el-button  @click="AddNewPage" :loading="isload">
     新增
   </el-button>
@@ -52,6 +59,7 @@ export default {
     this.getNotionInfo();
   },
   setup() {
+    const value1 = ref(true)
     const input = ref('')
     const pageInfo = ref('')
     const token = ref('')
@@ -65,12 +73,23 @@ export default {
     const AddNewPage = async ()=>{
       //
       isload.value=true;
+      if(token.value===''|| pageInfo.value==='' || input.value===''){
+        ElMessage.error("请完善notion链接信息")
+        isload.value=false;
+        return
+      }
       try {
+          let num=2;
+          if(!value1.value){
+            num=10;
+          }
+          console.log(num)
           let data={
             "token":token.value,
             "page_id":pageInfo.value,
             "bot_id":store.state.userInfo.bot_id,
-            "doc_name":input.value
+            "doc_name":input.value,
+            "subNum":num
           }
           let res =  await addNotionInfo(data);
           if(res.data.ActionType==="OK"){
@@ -167,6 +186,7 @@ export default {
       ReSetDoc,
       searchDoc,
       token,
+      value1,
       isload
     }
   }
