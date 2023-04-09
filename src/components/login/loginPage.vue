@@ -61,7 +61,6 @@ export default {
               store.commit("changeUserInfo",res.data.data)
               store.commit("changeGetterRouter",false)
               router.push('/question/ylhub')
-
             }
             else {
               ElNotification({

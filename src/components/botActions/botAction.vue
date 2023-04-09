@@ -122,7 +122,6 @@ export default {
       let data= {"data":{
           "name":formData.name,
           "avatar":formData.avatarUrl,
-          "status":"0",
           "contents":formData.initInfo,
           "info":formData.link
         },

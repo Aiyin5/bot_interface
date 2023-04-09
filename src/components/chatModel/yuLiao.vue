@@ -2,8 +2,9 @@
   <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
     <el-tab-pane label="当前语料库（即将遗弃）" name="first"><BotData /></el-tab-pane>
     <el-tab-pane label="PDF上传" name="second"><file-upload /></el-tab-pane>
-    <el-tab-pane label="文本更新" name="third">文本更新</el-tab-pane>
+    <el-tab-pane label="文本更新" name="third"><text-update/></el-tab-pane>
     <el-tab-pane label="Notion" name="fourth"><notion-update/></el-tab-pane>
+    <el-tab-pane label="语料使用配置" name="fifth"><yuliao-config></yuliao-config></el-tab-pane>
   </el-tabs>
 </template>
 <script>
@@ -11,9 +12,11 @@ import { ref } from 'vue'
 import BotData from "@/components/chatModel/botData.vue";
 import FileUpload from "@/components/yuLiao/fileUpdate.vue";
 import NotionUpdate from "@/components/yuLiao/notionUpdate.vue";
+import TextUpdate from "@/components/yuLiao/textUpdate.vue";
+import YuliaoConfig from "@/components/yuLiao/yuliaoConfig.vue";
 export default {
 name:"yuLiao",
-  components: {NotionUpdate, FileUpload, BotData},
+  components: {YuliaoConfig, TextUpdate, NotionUpdate, FileUpload, BotData},
   setup() {
     const activeName = ref('first')
     const handleClick = (tab,event) => {

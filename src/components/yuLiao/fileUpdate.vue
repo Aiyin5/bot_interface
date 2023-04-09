@@ -92,7 +92,7 @@ export default {
     }
     const getFileInfo = async ()=>{
       try {
-        let response=await fileInfo({"bot_id":store.state.userInfo.bot_id})
+        let response=await fileInfo({"bot_id":store.state.userInfo.bot_id,"type":1})
         if(!response.data.ActionType===1){
           ElMessage.error('获取数据失败.')
           return;
@@ -166,7 +166,7 @@ export default {
        else {
          ElMessage("上传成功")
          try {
-           await getFileInfo({"bot_id":store.state.userInfo.bot_id});
+           await getFileInfo({"bot_id":store.state.userInfo.bot_id,"type":1});
          }
          catch (err){
            console.log(err);
