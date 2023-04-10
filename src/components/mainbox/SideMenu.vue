@@ -41,6 +41,12 @@
               </el-icon>
               <span>成员管理</span>
             </el-menu-item>
+            <el-menu-item index="/logInfo">
+              <el-icon>
+                <Document />
+              </el-icon>
+              <span>日志查看</span>
+            </el-menu-item>
           </el-menu>
         </el-scrollbar>
       </el-aside>

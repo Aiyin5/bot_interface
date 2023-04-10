@@ -8,6 +8,7 @@ import Center from "@/view/user/Center.vue";
 import userControl from "@/view/user/userControl.vue";
 import lateUpdate from "@/view/lateUpdate/lateUpdate.vue";
 import yuLiao from "@/components/chatModel/yuLiao.vue";
+import logInfo from "@/components/logInfo/logInfo.vue";
 const  routes = [
 /*    {
         path:"/index",
@@ -56,6 +57,11 @@ const  routes = [
     {
         path:"/question/cmquestion",
         component:lateUpdate,
+        requireAdmin:true
+    },
+    {
+        path:"/logInfo",
+        component:logInfo,
         requireAdmin:true
     },
     {
