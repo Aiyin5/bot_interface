@@ -13,7 +13,7 @@
           label="答案">
       </el-table-column>
       <el-table-column
-          prop="other"
+          prop="others"
           label="相关数据">
       </el-table-column>
       <el-table-column
