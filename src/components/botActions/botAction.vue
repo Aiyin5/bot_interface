@@ -14,6 +14,9 @@
       <el-form-item label="机器人名称">
         <el-input v-model="formData.name" :disabled="!editShow" style="max-width: 100px" />
       </el-form-item>
+      <el-form-item label="监听频道设置">
+        <el-input v-model="formData.channel" :disabled="!editShow" style="max-width: 100px" />
+      </el-form-item>
       <el-form-item label="头像">
         <el-avatar :size="80" :src="formData.avatarUrl" />
       </el-form-item>
@@ -103,6 +106,7 @@ export default {
       avatarUrl: '/default-avatar.jpg',
       initInfo: '--------------------------------',
       base64String:'',
+      channel:"0",
       link:""
     })
     const editBaseInfo=()=>{
@@ -123,6 +127,7 @@ export default {
           "name":formData.name,
           "avatar":formData.avatarUrl,
           "contents":formData.initInfo,
+          "channel":formData.channel,
           "info":formData.link
         },
       "where":{
@@ -152,6 +157,7 @@ export default {
           formData.initInfo=items.contents;
           formData.link=items.info;
           formData.avatarUrl = items.avatar;
+          formData.channel = items.channel;
         }
       }
       catch (err){

@@ -4,11 +4,16 @@ import RoutesConfig from './config'
 import store from '../store/index'
 import botData from "@/components/chatModel/botData.vue";
 import MainBox from "@/view/MainBox.vue";
+import chatInteraction from "@/components/chatModel/chatInteraction.vue";
 export const constantRoutes = [
     {
         path: '/register',
         name: 'register',
         component: () => import('../components/login/registerPage.vue'),
+    },
+    {
+        path:"/test",
+        component: chatInteraction
     },
     {
         path: '/login',
@@ -45,7 +50,7 @@ export const router = createRouter({
 })*/
 
 router.beforeEach((to, from, next) => {
-    if (to.name === "login" || to.name === "register" || to.name === "testimage") {
+    if (to.name === "login" || to.name === "register" || to.name === "test") {
         next()
     } else {
         //如果授权(已经登录过了) next()

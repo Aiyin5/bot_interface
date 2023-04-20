@@ -9,6 +9,7 @@ import userControl from "@/view/user/userControl.vue";
 import lateUpdate from "@/view/lateUpdate/lateUpdate.vue";
 import yuLiao from "@/components/chatModel/yuLiao.vue";
 import logInfo from "@/components/logInfo/logInfo.vue";
+import chatInteraction from "@/components/chatModel/chatInteraction.vue";
 const  routes = [
 /*    {
         path:"/index",

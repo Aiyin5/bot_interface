@@ -26,13 +26,14 @@ export default {
     const showText = ()=>{
       loading.value=true;
       let item={"data":inputText.value};
-      axios.post('/app/api/bing',item,{
+      axios.post('/server/wx',inputText.value,{
         headers: {
           'Content-Type': 'application/json'
         }}).then(response => {
         ElMessage('发送成功.')
         console.log(response);
-        displayText.value=response.data.message;
+        displayText.value=response.data;
+        console.log(displayText.value)
         loading.value=false;
         // 处理响应
       }).catch(error => {
